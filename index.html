@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skillversity | Asset Issuance Form</title>
+    <meta name="description" content="Skillversity internal employee asset issuance form.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="shortcut icon" type="image/png" href="favicon.png?v=2">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary-blue: #2563EB;
+            --primary-purple: #4F46E5;
+            --primary-orange: #FF5722;
+            --text-dark: #0F172A;
+            --text-sub: #475569;
+            --bg-body: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --border-light: #CBD5E1;
+            --border-focus: #2563EB;
+            --danger: #EF4444;
+            --success: #10B981;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-body);
+            background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(255, 87, 34, 0.08) 0px, transparent 50%);
+            color: var(--text-dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2.5rem 1rem;
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 840px;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px -8px rgba(15, 23, 42, 0.12);
+            padding: 2.5rem;
+            border: 1px solid #E2E8F0;
+            position: relative;
+        }
+
+        /* Header & Logo Sizing */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2.25rem;
+            padding-bottom: 1.75rem;
+            border-bottom: 2px dashed #E2E8F0;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .logo-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-fallback {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 0.05em;
+        }
+
+        .form-main-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1E3A8A;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-sub-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Form Sections */
+        .form-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .section-box {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-left: 5px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 1.75rem;
+        }
+
+        .section-box.orange-accent {
+            border-left-color: var(--primary-orange);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1E3A8A;
+        }
+
+        .section-badge {
+            background-color: #EFF6FF;
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+        }
+
+        /* Grids & Fields */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .field-group {
+            margin-bottom: 1.35rem;
+        }
+
+        .section-box .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1E3A8A;
+            margin-bottom: 0.45rem;
+        }
+
+        .req {
+            color: var(--danger);
+        }
+
+        .hint {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        /* Inputs */
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: #F8FAFC;
+            border: 1.5px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            background-color: #FFFFFF;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.12);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94A3B8;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.75rem;
+            cursor: pointer;
+        }
+
+        /* Asset Checkboxes Grid */
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .asset-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.8rem;
+            background-color: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1E3A8A;
+        }
+
+        .asset-item:hover {
+            border-color: var(--primary-blue);
+            background-color: #EFF6FF;
+        }
+
+        .asset-item input[type="checkbox"] {
+            width: 1.15rem;
+            height: 1.15rem;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        .asset-item:has(input:checked) {
+            border-color: var(--primary-blue);
+            background-color: #EFF6FF;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .radio-option input[type="radio"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--primary-orange);
+            cursor: pointer;
+        }
+
+        /* Declaration */
+        .declaration-wrapper {
+            background-color: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .declaration-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1E3A8A;
+            margin-bottom: 0;
+        }
+
+        .declaration-label input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary-orange);
+            cursor: pointer;
+        }
+
+        /* Toast Status Notification */
+        .toast-notify {
+            display: none;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: center;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Button */
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 1.15rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+            text-transform: uppercase;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 87, 34, 0.35);
+        }
+
+        .submit-button:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #E2E8F0;
+            color: #94A3B8;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* Custom Modern Modal Popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            padding: 2.25rem 1.75rem;
+            text-align: center;
+            box-shadow: 0 25px 60px -10px rgba(15, 23, 42, 0.3);
+            border: 1px solid #E2E8F0;
+            animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-icon-badge {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 1.25rem;
+            background: #FEF3C7;
+            color: #D97706;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.15);
+        }
+
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #1E3A8A;
+            margin-bottom: 0.65rem;
+        }
+
+        .modal-message {
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.55;
+            margin-bottom: 1.75rem;
+            font-weight: 500;
+        }
+
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
+            color: white;
+            border: none;
+            padding: 0.95rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+            text-transform: uppercase;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.35);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Offscreen Render Container for html2pdf (Prevents Blank PDF) */
+        #voucherContainer {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 780px;
+            background: #FFFFFF;
+        }
+
+        /* Mobile View Optimization */
+        @media (max-width: 640px) {
+            body { 
+                padding: 0.75rem 0.5rem; 
+            }
+            .main-card { 
+                padding: 1.25rem 1rem; 
+                border-radius: 14px;
+            }
+            .brand-header {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1.25rem;
+            }
+            .logo-img {
+                max-width: 240px;
+            }
+            .form-main-title {
+                font-size: 1.35rem;
+            }
+            .form-sub-title {
+                font-size: 0.8rem;
+            }
+            .section-box {
+                padding: 1.25rem 1rem;
+            }
+            .grid-2 { 
+                grid-template-columns: 1fr; 
+                gap: 1rem;
+            }
+            .asset-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 0.5rem;
+            }
+            .asset-item {
+                padding: 0.65rem 0.5rem;
+                font-size: 0.78rem;
+            }
+            .submit-button {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .asset-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="main-card">
+        <!-- Header & Logo -->
+        <header class="brand-header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Skillversity Logo" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
+                <div id="fallback-title" class="logo-fallback" style="display:none;">SKILLVERSITY</div>
+            </div>
+            <h1 class="form-main-title">ASSET ISSUANCE FORM</h1>
+            <p class="form-sub-title">Asset Allocation &amp; Tracking</p>
+        </header>
+
+        <!-- Form Layout -->
+        <form id="issuanceForm" class="form-layout" novalidate>
+            
+            <!-- SECTION 1: Employee Details -->
+            <section class="section-box">
+                <div class="section-header">
+                    <h2 class="section-title">Employee Details</h2>
+                    <span class="section-badge">BLOCK LETTERS</span>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="date">Date <span class="req">*</span></label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="received-date">Asset Received Date <span class="hint">(Month, day, year)</span></label>
+                        <input type="date" id="received-date" name="received-date">
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="emp-name">Employee Name <span class="req">*</span></label>
+                    <input type="text" id="emp-name" name="emp-name" placeholder="FULL NAME" class="uppercase" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="emp-email">Employee Email ID <span class="req">*</span></label>
+                        <input type="email" id="emp-email" name="emp-email" placeholder="name@company.com" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="emp-id">Employee ID <span class="req">*</span></label>
+                        <input type="text" id="emp-id" name="emp-id" placeholder="SV-10024" class="uppercase" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="department">Department <span class="req">*</span></label>
+                        <select id="department" name="department" required>
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="ADMINISTRATION">ADMINISTRATION</option>
+                            <option value="ACADEMIC OPERATIONS">ACADEMIC OPERATIONS</option>
+                            <option value="ADMISSIONS">ADMISSIONS</option>
+                            <option value="BRAND COMMUNICATION">BRAND COMMUNICATION</option>
+                            <option value="CORPORATE OPERATIONS">CORPORATE OPERATIONS</option>
+                            <option value="IT OPERATIONS">IT OPERATIONS</option>
+                            <option value="PLACEMENT">PLACEMENT</option>
+                            <option value="STUDENTS AFFAIRS">STUDENTS AFFAIRS</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="issued-by">Asset Issued By <span class="req">*</span></label>
+                        <input type="text" id="issued-by" name="issued-by" placeholder="ISSUER NAME" class="uppercase" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: Asset Details -->
+            <section class="section-box orange-accent">
+                <div class="section-header">
+                    <h2 class="section-title">Asset Details</h2>
+                </div>
+
+                <!-- Multi-select Asset Grid -->
+                <div class="field-group">
+                    <label>Asset(s) Issued <span class="req">*</span></label>
+                    <div class="asset-grid">
+                        <label class="asset-item"><input type="checkbox" name="assets" value="LAPTOP"> LAPTOP</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="LAPTOP CHARGER"> LAPTOP CHARGER</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="LAPTOP BAG"> LAPTOP BAG</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="MOBILE"> MOBILE</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="MOBILE CHARGER"> MOBILE CHARGER</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="TABLET"> TABLET</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="TABLET CHARGER"> TABLET CHARGER</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="PENDRIVE"> PENDRIVE</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="HARD DISK"> HARD DISK</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="DESKTOP PC"> DESKTOP PC</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="MOUSE"> MOUSE</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="KEYBOARD"> KEYBOARD</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="MEMORY CARD"> MEMORY CARD</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="HEAD PHONE"> HEAD PHONE</label>
+                    </div>
+                </div>
+
+                <!-- Detailed Hardware Inputs -->
+                <div class="field-group">
+                    <label for="laptop-brand">Laptop Brand <span class="req">*</span></label>
+                    <input type="text" id="laptop-brand" name="laptop-brand" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="laptop-serial">Laptop Serial Number <span class="req">*</span></label>
+                    <input type="text" id="laptop-serial" name="laptop-serial" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="laptop-charger-serial">Laptop Charger Serial Number <span class="req">*</span></label>
+                    <input type="text" id="laptop-charger-serial" name="laptop-charger-serial" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="headphone-brand">Head Phone Brand <span class="req">*</span></label>
+                    <input type="text" id="headphone-brand" name="headphone-brand" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="mouse-type">Mouse Type <span class="req">*</span></label>
+                        <select id="mouse-type" name="mouse-type" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Wired">Wired</option>
+                            <option value="Wireless">Wireless</option>
+                            <option value="NIL">NIL</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="keyboard-type">Keyboard Type <span class="req">*</span></label>
+                        <select id="keyboard-type" name="keyboard-type" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Wired">Wired</option>
+                            <option value="Wireless">Wireless</option>
+                            <option value="NIL">NIL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="mobile-brand">Mobile Brand <span class="req">*</span></label>
+                    <input type="text" id="mobile-brand" name="mobile-brand" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="mobile-serial">Mobile Serial Number <span class="req">*</span></label>
+                    <input type="text" id="mobile-serial" name="mobile-serial" placeholder="Dial *#06#; NIL if not assigned" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="mobile-imei">Mobile IMEI Number <span class="req">*</span></label>
+                    <input type="text" id="mobile-imei" name="mobile-imei" placeholder="Dial *#06#; NIL if not assigned" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="mobile-charger-serial">Mobile Charger Serial Number <span class="req">*</span></label>
+                    <input type="text" id="mobile-charger-serial" name="mobile-charger-serial" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="tab-brand">Tab Brand <span class="req">*</span></label>
+                    <input type="text" id="tab-brand" name="tab-brand" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="tab-serial">Tab Serial Number <span class="req">*</span></label>
+                    <input type="text" id="tab-serial" name="tab-serial" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <!-- Storage Radios -->
+                <div class="field-group">
+                    <label>Storage Device <span class="req">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="storage-device" value="Pendrive" required>
+                            Pendrive
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="storage-device" value="Hard Disk">
+                            Hard Disk
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="storage-device" value="Memory Card">
+                            Memory Card
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="storage-device" value="NIL">
+                            NIL
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
+                    <input type="text" id="storage-capacity" name="storage-capacity" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea id="remarks" name="remarks" rows="3" placeholder="Enter any additional remarks..."></textarea>
+                </div>
+            </section>
+
+            <!-- Declaration Checkbox -->
+            <div class="declaration-wrapper">
+                <label class="declaration-label">
+                    <input type="checkbox" id="agreement" name="agreement" required>
+                    I agree to the above declaration. <span class="req">*</span>
+                </label>
+            </div>
+
+            <!-- Toast Notification -->
+            <div id="toast" class="toast-notify">
+                ✅ Form Submitted! Generating your PDF...
+            </div>
+
+            <!-- Submit Action -->
+            <button type="submit" id="btnSubmit" class="submit-button">
+                SUBMIT &amp; DOWNLOAD PDF
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; Skillversity 2026 | IT &amp; OPERATIONS</p>
+        </footer>
+    </main>
+
+    <!-- Custom Modern Alert Modal Popup -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon-badge" id="modalIcon">⚠️</div>
+            <h3 class="modal-title" id="modalTitle">Submission Blocked</h3>
+            <p class="modal-message" id="modalMessage">An Asset Issuance record has already been submitted for this Employee ID / Email ID.</p>
+            <button type="button" class="modal-btn" id="modalCloseBtn">OK, GOT IT</button>
+        </div>
+    </div>
+
+    <!-- Offscreen Printable Voucher Element -->
+    <div id="voucherContainer"></div>
+
+    <script>
+        // Set today's date
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Configurable Google Sheet Webhook URL (Silent Background Sync)
+        const GOOGLE_SCRIPT_URL = localStorage.getItem('skillversity_sheet_url') || "https://script.google.com/macros/s/AKfycbzj8bi8ch8tqY29yhH6FDl6hLoWyNyATaPmrvAvd5D9IGUufARz-rqTxRMjqk_6awdy2A/exec";
+
+        // Show Custom Modern Modal Alert
+        function showCustomAlert(title, message) {
+            const modal = document.getElementById('customModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMsg = document.getElementById('modalMessage');
+
+            modalTitle.textContent = title;
+            modalMsg.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        document.getElementById('modalCloseBtn').addEventListener('click', () => {
+            document.getElementById('customModal').style.display = 'none';
+        });
+
+        // Collect Form Data into Object
+        function getFormData() {
+            const form = document.getElementById('issuanceForm');
+            const selectedAssets = Array.from(form.querySelectorAll('input[name="assets"]:checked')).map(cb => cb.value).join(', ');
+            const selectedStorage = form.querySelector('input[name="storage-device"]:checked')?.value || 'NIL';
+
+            return {
+                timestamp: new Date().toLocaleString(),
+                date: form.querySelector('#date').value,
+                receivedDate: form.querySelector('#received-date').value || 'NIL',
+                employeeName: form.querySelector('#emp-name').value.toUpperCase(),
+                employeeEmail: form.querySelector('#emp-email').value.trim().toLowerCase(),
+                employeeId: form.querySelector('#emp-id').value.toUpperCase(),
+                department: form.querySelector('#department').value,
+                issuedBy: form.querySelector('#issued-by').value.toUpperCase(),
+                assetsIssued: selectedAssets,
+                laptopBrand: form.querySelector('#laptop-brand').value,
+                laptopSerial: form.querySelector('#laptop-serial').value,
+                laptopChargerSerial: form.querySelector('#laptop-charger-serial').value,
+                headphoneBrand: form.querySelector('#headphone-brand').value,
+                mouseType: form.querySelector('#mouse-type').value,
+                keyboardType: form.querySelector('#keyboard-type').value,
+                mobileBrand: form.querySelector('#mobile-brand').value,
+                mobileSerial: form.querySelector('#mobile-serial').value,
+                mobileImei: form.querySelector('#mobile-imei').value,
+                mobileChargerSerial: form.querySelector('#mobile-charger-serial').value,
+                tabBrand: form.querySelector('#tab-brand').value,
+                tabSerial: form.querySelector('#tab-serial').value,
+                storageDevice: selectedStorage,
+                storageCapacity: form.querySelector('#storage-capacity').value,
+                remarks: form.querySelector('#remarks').value || 'N/A'
+            };
+        }
+
+        // Build Printable Voucher Layout
+        function buildVoucherHTML(d) {
+            return `
+            <div style="font-family: Arial, sans-serif; padding: 25px; color: #0F172A; background: #FFFFFF; width: 750px; border: 2px solid #1E3A8A; border-radius: 8px;">
+                <div style="text-align: center; border-bottom: 2px solid #1E3A8A; padding-bottom: 12px; margin-bottom: 18px;">
+                    <img src="logo.png" style="max-width: 250px; height: auto;" onerror="this.style.display='none';">
+                    <h2 style="color: #1E3A8A; font-size: 24px; font-weight: 800; margin-top: 8px; margin-bottom: 4px; text-transform: uppercase;">ASSET ISSUANCE REPORT</h2>
+                </div>
+
+                <div style="margin-bottom: 18px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px; padding: 12px;">
+                    <h3 style="color: #1E3A8A; font-size: 14px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">1. Employee Information</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <tr>
+                            <td style="padding: 4px 0; width: 22%;"><strong>Employee Name:</strong></td>
+                            <td style="padding: 4px 0; width: 28%; color: #1E3A8A; font-weight: 700;">${d.employeeName}</td>
+                            <td style="padding: 4px 0; width: 22%;"><strong>Date of Issuance:</strong></td>
+                            <td style="padding: 4px 0; width: 28%;">${d.date}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><strong>Employee ID:</strong></td>
+                            <td style="padding: 4px 0; color: #1E3A8A; font-weight: 700;">${d.employeeId}</td>
+                            <td style="padding: 4px 0;"><strong>Asset Received Date:</strong></td>
+                            <td style="padding: 4px 0;">${d.receivedDate}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><strong>Employee Email:</strong></td>
+                            <td style="padding: 4px 0; color: #2563EB;">${d.employeeEmail}</td>
+                            <td style="padding: 4px 0;"><strong>Asset Issued By:</strong></td>
+                            <td style="padding: 4px 0; font-weight: 700;">${d.issuedBy}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><strong>Department:</strong></td>
+                            <td style="padding: 4px 0;" colspan="3">${d.department}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-bottom: 18px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 12px;">
+                    <h3 style="color: #1E3A8A; font-size: 14px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">2. Issued Equipment &amp; Serial Details</h3>
+                    
+                    <p style="font-size: 12px; margin-bottom: 10px;"><strong>Assets Selected:</strong> <span style="color: #2563EB; font-weight: 700;">${d.assetsIssued || 'None'}</span></p>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #CBD5E1;">
+                        <thead>
+                            <tr style="background: #1E3A8A; color: white; text-align: left;">
+                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 30%;">Equipment Item</th>
+                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 35%;">Brand / Specification</th>
+                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 35%;">Serial Number / IMEI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Laptop</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopBrand}</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopSerial}</td>
+                            </tr>
+                            <tr style="background: #F8FAFC;">
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Laptop Charger</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopChargerSerial}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Head Phone</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.headphoneBrand}</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                            </tr>
+                            <tr style="background: #F8FAFC;">
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mouse &amp; Keyboard</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Mouse: ${d.mouseType} | Keyboard: ${d.keyboardType}</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mobile Device</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.mobileBrand} (Charger: ${d.mobileChargerSerial})</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Serial: ${d.mobileSerial} | IMEI: ${d.mobileImei}</td>
+                            </tr>
+                            <tr style="background: #F8FAFC;">
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Tab Device</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.tabBrand}</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.tabSerial}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Storage Media</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.storageDevice} (${d.storageCapacity})</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="font-size: 11px; margin-top: 8px;"><strong>Remarks:</strong> ${d.remarks}</p>
+                </div>
+
+                <div style="font-size: 11px; color: #334155; border: 1px dashed #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 30px;">
+                    <strong>Declaration:</strong> I acknowledge receipt of the above-listed equipment and agree to take responsible care of all issued assets. I understand all equipment remains the property of Skillversity and must be returned upon request or termination of employment.
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 35px; font-size: 12px;">
+                    <div style="text-align: center; width: 45%;">
+                        <p style="margin-bottom: 35px;">__________________________________________</p>
+                        <p><strong>Employee Signature</strong></p>
+                    </div>
+                    <div style="text-align: center; width: 45%;">
+                        <p style="margin-bottom: 35px;">__________________________________________</p>
+                        <p><strong>Issued By / Authorizer Signature</strong></p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px; border-top: 1px solid #E2E8F0; padding-top: 8px; font-size: 10px; color: #94A3B8;">
+                    Skillversity Official Asset Record &bull; Generated on ${d.timestamp}
+                </div>
+            </div>
+            `;
+        }
+
+        // Form Submit Handler
+        document.getElementById('issuanceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const requiredFields = this.querySelectorAll('[required]');
+            let valid = true;
+            let firstInvalid = null;
+
+            requiredFields.forEach(field => {
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    const checked = this.querySelector(`input[name="${field.name}"]:checked`);
+                    if (!checked) {
+                        valid = false;
+                        if (!firstInvalid) firstInvalid = field;
+                    }
+                } else if (!field.value.trim()) {
+                    valid = false;
+                    field.style.borderColor = '#EF4444';
+                    if (!firstInvalid) firstInvalid = field;
+                } else {
+                    field.style.borderColor = '#CBD5E1';
+                }
+            });
+
+            if (!valid) {
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (firstInvalid.focus) firstInvalid.focus();
+                }
+                showCustomAlert('Required Fields Missing', 'Please complete all required fields marked with a red asterisk (*).');
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = 'GENERATING REPORT PDF...';
+
+            const formData = getFormData();
+
+            // Enforce "One ID / Email can fill one sheet" rule
+            const submittedRecords = JSON.parse(localStorage.getItem('skillversity_submitted_ids') || '[]');
+            if (submittedRecords.includes(formData.employeeId) || submittedRecords.includes(formData.employeeEmail)) {
+                showCustomAlert('Submission Blocked', 'An Asset Issuance record has already been submitted for Employee ID: ' + formData.employeeId + ' (' + formData.employeeEmail + '). Each Employee ID / Email ID can fill only one asset issuance form.');
+                btn.disabled = false;
+                btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
+                return;
+            }
+            submittedRecords.push(formData.employeeId, formData.employeeEmail);
+            localStorage.setItem('skillversity_submitted_ids', JSON.stringify(submittedRecords));
+
+            // 1. Send data to Google Sheet silently in background
+            if (GOOGLE_SCRIPT_URL) {
+                try {
+                    fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } catch (err) {
+                    console.log('Sheet update sent');
+                }
+            }
+
+            // 2. Render Voucher offscreen & capture with html2pdf
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+
+            const voucherContainer = document.getElementById('voucherContainer');
+            voucherContainer.innerHTML = buildVoucherHTML(formData);
+            const voucherElement = voucherContainer.firstElementChild;
+
+            try {
+                const opt = {
+                    margin:       0.2,
+                    filename:     `Skillversity_Asset_Report_${formData.employeeName.replace(/\s+/g, '_')}_${formData.employeeId}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                
+                await html2pdf().set(opt).from(voucherElement).save();
+            } catch (err) {
+                window.print();
+            }
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
+                window.location.reload();
+            }, 1800);
+        });
+
+        // Reset error styling on input
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', () => el.style.borderColor = '#CBD5E1');
+        });
+    </script>
+</body>
+</html>
