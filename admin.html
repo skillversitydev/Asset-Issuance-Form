@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity - Vercel Power Admin Portal</title>
+    <title>Skillversity - Power Admin Portal</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="index.css">
 </head>
@@ -96,7 +96,7 @@
 
         <!-- Footer -->
         <div style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: #64748B;">
-            Skillversity Vercel Admin Database Portal &bull; IT &amp; Operations
+            Skillversity Admin Database Portal &bull; IT &amp; Operations
         </div>
     </div>
 
@@ -109,7 +109,7 @@
         const adminLoginError = document.getElementById('adminLoginError');
         const loggedUserDisplay = document.getElementById('loggedUserDisplay');
 
-        // Check active Vercel session (ONLY pladmin allowed)
+        // Check active session (ONLY pladmin allowed)
         const activeSession = sessionStorage.getItem('skillversity_logged_admin');
         if (activeSession === 'pladmin') {
             showPortal('pladmin');
@@ -128,7 +128,7 @@
                 sessionStorage.setItem('skillversity_logged_admin', 'pladmin');
                 showPortal('pladmin');
             } else if (!isPladminUser && (username === 'admin' || username === 'admin@skillversity.org')) {
-                adminLoginError.textContent = '❌ Access Denied: Only Power Admin (pladmin) is authorized to log into the Vercel Admin Portal.';
+                adminLoginError.textContent = '❌ Access Denied: Only Power Admin (pladmin) is authorized to log into the Admin Portal.';
                 adminLoginError.style.display = 'block';
             } else {
                 adminLoginError.textContent = '⚠️ Incorrect Username or Password! Please enter correct Username and Password';
