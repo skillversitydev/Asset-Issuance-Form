@@ -1050,12 +1050,32 @@
             return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Secure Cryptographic SHA-256 Credential Map (No plain-text passwords stored)
+        // Secure Cryptographic SHA-256 Credential Map (Supports pladmin123, admin123, pladmin, admin)
         const AUTH_CREDENTIAL_MAP = {
-            'admin': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // admin123
-            'admin@skillversity.org': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
-            'pladmin': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00', // pladmin@123
-            'pladmin@skillversity.org': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00'
+            'admin': [
+                '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // admin123
+                'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00', // pladmin123
+                '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', // admin
+                '7472097ca1f185ef3dffaa1c67d8d2ae4c185df1f63e680a37e5bf6560b29ff0'  // pladmin
+            ],
+            'admin@skillversity.org': [
+                '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+                'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00',
+                '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
+                '7472097ca1f185ef3dffaa1c67d8d2ae4c185df1f63e680a37e5bf6560b29ff0'
+            ],
+            'pladmin': [
+                'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00', // pladmin123
+                '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // admin123
+                '7472097ca1f185ef3dffaa1c67d8d2ae4c185df1f63e680a37e5bf6560b29ff0', // pladmin
+                '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'  // admin
+            ],
+            'pladmin@skillversity.org': [
+                'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00',
+                '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+                '7472097ca1f185ef3dffaa1c67d8d2ae4c185df1f63e680a37e5bf6560b29ff0',
+                '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+            ]
         };
 
         // Check active Admin session on load
@@ -1067,14 +1087,14 @@
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
+            const password = document.getElementById('login-password').value.trim();
             const loginError = document.getElementById('login-error');
 
             const hashedInput = await hashPassword(password);
-            const expectedHash = AUTH_CREDENTIAL_MAP[username];
+            const validHashes = AUTH_CREDENTIAL_MAP[username] || [];
 
             let loggedRole = null;
-            if (expectedHash && expectedHash === hashedInput) {
+            if (validHashes.includes(hashedInput)) {
                 if (username.startsWith('pladmin')) {
                     loggedRole = 'pladmin';
                 } else {
