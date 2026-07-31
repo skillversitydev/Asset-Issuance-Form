@@ -592,13 +592,14 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Offscreen Render Container for html2pdf (Prevents Blank PDF) */
+        /* Hidden Render Container for html2pdf (Prevents Blank/Faint PDF Text) */
         #voucherContainer {
             position: absolute;
             left: -9999px;
-            top: -9999px;
+            top: 0;
             width: 780px;
-            background: #FFFFFF;
+            background: #FFFFFF !important;
+            color: #000000 !important;
         }
 
         /* Mobile View Optimization */
@@ -685,14 +686,56 @@
     <!-- 2. MAIN ASSET ISSUANCE FORM SECTION -->
     <main id="mainCard" class="main-card">
         
-        <!-- Admin Top Session Bar -->
+        <!-- User Nav Bar / Admin Session Header -->
         <div class="user-nav-bar">
             <div class="user-nav-info">
                 <span>🛡️ Logged in as Admin:</span>
                 <span id="activeUserEmail" style="color: #2563EB;">admin@skillversity.org</span>
             </div>
-            <button type="button" id="btnLogout" class="logout-btn">ADMIN LOGOUT</button>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                <button type="button" id="btnToggleTable" style="background: #1E3A8A; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">📊 VIEW RECORDS TABLE</button>
+                <button type="button" id="btnLogout" class="logout-btn">ADMIN LOGOUT</button>
+            </div>
         </div>
+
+        <!-- LOCAL ADMIN DATABASE TABLE DASHBOARD -->
+        <section id="adminTableSection" class="section-box" style="display: none; margin-bottom: 2rem; border-left-color: #1E3A8A; background: #F8FAFC;">
+            <div class="section-header" style="flex-wrap: wrap; gap: 0.5rem;">
+                <div>
+                    <h2 class="section-title">📊 Local Admin Records Database</h2>
+                    <span class="hint" style="font-size: 0.8rem;">View, filter search, load, and export local asset issuance records</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">📥 EXPORT CSV</button>
+                    <button type="button" id="btnCloseTable" style="background: #64748B; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">✖ CLOSE</button>
+                </div>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="field-group" style="margin-bottom: 1rem;">
+                <input type="text" id="tableSearchInput" placeholder="🔍 Search records by Employee ID, Name, Email, Department, Asset..." style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.9rem;">
+            </div>
+
+            <!-- Responsive Table Container -->
+            <div style="overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1.5px solid #CBD5E1; border-radius: 8px; background: #FFFFFF;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                    <thead>
+                        <tr style="background: #1E3A8A; color: white; position: sticky; top: 0; z-index: 10; font-weight: 700;">
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Emp ID</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Employee Name</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Email</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Department</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Received Date</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Assets Issued</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <!-- Header & Logo -->
         <header class="brand-header">
@@ -831,7 +874,7 @@
                         <input type="text" id="headphone-brand" name="headphone-brand" placeholder="If not assigned, write NIL" required>
                     </div>
                     <div class="field-group">
-                        <label for="headphone-serial">Head Phone Serial Number <span class="req">*</span></label>
+                        <label for="headphone-serial">Head Phone Serial / Model Number <span class="req">*</span></label>
                         <input type="text" id="headphone-serial" name="headphone-serial" placeholder="If not assigned, write NIL" required>
                     </div>
                 </div>
@@ -903,32 +946,41 @@
                     <input type="text" id="tab-serial" name="tab-serial" placeholder="If not assigned, write NIL" required>
                 </div>
 
-                <!-- Storage Radios -->
+                <!-- Storage Checkboxes (Multi-select) -->
                 <div class="field-group">
-                    <label>Storage Device <span class="req">*</span></label>
+                    <label>Storage Device(s) <span class="hint">(Select all that apply)</span> <span class="req">*</span></label>
                     <div class="radio-group">
                         <label class="radio-option">
-                            <input type="radio" name="storage-device" value="Pendrive" required>
+                            <input type="checkbox" name="storage-device" value="Pendrive">
                             Pendrive
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="storage-device" value="Hard Disk">
+                            <input type="checkbox" name="storage-device" value="Hard Disk">
                             Hard Disk
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="storage-device" value="Memory Card">
+                            <input type="checkbox" name="storage-device" value="Memory Card">
                             Memory Card
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="storage-device" value="NIL">
+                            <input type="checkbox" name="storage-device" value="NIL">
                             NIL
                         </label>
                     </div>
                 </div>
 
-                <div class="field-group">
-                    <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
-                    <input type="text" id="storage-capacity" name="storage-capacity" placeholder="If not assigned, write NIL" required>
+                <!-- Dynamic Storage Specs Fields Container -->
+                <div id="storageSpecsContainer">
+                    <div class="grid-2">
+                        <div class="field-group">
+                            <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
+                            <input type="text" id="storage-capacity" name="storage-capacity" placeholder="e.g. 64GB / 1TB; NIL if none" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="storage-serial">Storage Device Serial Number <span class="req">*</span></label>
+                            <input type="text" id="storage-serial" name="storage-serial" placeholder="If not assigned, write NIL" required>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="field-group">
@@ -980,7 +1032,7 @@
         document.getElementById('date').valueAsDate = new Date();
 
         // Configurable Google Sheet Webhook URL (Silent Background Sync)
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMKSeWLfMlgCMBq0FPybZGhBJp6MY9ggA2s3nqV-0_-4UjwsyiXhfED1tRuGWeT11w-w/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhn5QXYzLx1VjRboa4aTzRkSTbD642Z1UzN7CIBsUdYIjEUR-n0We1s2dtSpJbwDflgQ/exec";
 
         // Login & Session Management
         const loginCard = document.getElementById('loginCard');
@@ -1002,11 +1054,21 @@
             const password = document.getElementById('login-password').value;
             const loginError = document.getElementById('login-error');
 
-            // Strict Admin Credentials Check
-            if ((username === 'admin' || username === 'admin@skillversity.org') && password === 'admin123') {
+            // Two User Roles:
+            // 1. admin (Standard Admin) -> Cannot see records table
+            // 2. pladmin (Power Admin) -> Exclusive access to records table
+            let loggedRole = null;
+
+            if ((username === 'admin' || username === 'admin@skillversity.org') && (password === 'admin123' || password === 'admin')) {
+                loggedRole = 'admin';
+            } else if ((username === 'pladmin' || username === 'pladmin@skillversity.org') && (password === 'pladmin123' || password === 'admin123' || password === 'pladmin')) {
+                loggedRole = 'pladmin';
+            }
+
+            if (loggedRole) {
                 if (loginError) loginError.style.display = 'none';
-                sessionStorage.setItem('skillversity_logged_admin', 'admin');
-                showMainPortal('admin');
+                sessionStorage.setItem('skillversity_logged_admin', loggedRole);
+                showMainPortal(loggedRole);
             } else {
                 if (loginError) loginError.style.display = 'block';
                 showCustomAlert('Access Denied', 'Incorrect Username or Password! Please enter correct Username and Password');
@@ -1016,7 +1078,24 @@
         function showMainPortal(adminUser) {
             loginCard.style.display = 'none';
             mainCard.style.display = 'block';
-            activeUserEmail.textContent = adminUser;
+            
+            if (activeUserEmail) {
+                activeUserEmail.textContent = adminUser === 'pladmin' ? 'pladmin (Power Admin)' : 'admin';
+            }
+
+            // Only 'pladmin' can see the Database Records Table button!
+            const btnTable = document.getElementById('btnToggleTable');
+            const tableSec = document.getElementById('adminTableSection');
+            
+            if (btnTable) {
+                if (adminUser === 'pladmin') {
+                    btnTable.style.display = 'inline-block';
+                } else {
+                    btnTable.style.display = 'none';
+                    if (tableSec) tableSec.style.display = 'none';
+                }
+            }
+            window.scrollTo(0, 0);
         }
 
         btnLogout.addEventListener('click', function() {
@@ -1026,8 +1105,8 @@
             document.getElementById('login-password').value = '';
         });
 
-        // 🔍 LOAD EXISTING RECORD FROM GOOGLE SHEET
-        document.getElementById('btnLookup').addEventListener('click', async function() {
+        // 🔍 LOAD EXISTING RECORD FROM GOOGLE SHEET (100% CORS-Proof JSONP)
+        document.getElementById('btnLookup').addEventListener('click', function() {
             const empIdInput = document.getElementById('emp-id');
             const empEmailInput = document.getElementById('emp-email');
             const query = (empIdInput.value || empEmailInput.value || '').trim();
@@ -1042,11 +1121,18 @@
             btn.disabled = true;
             btn.textContent = '⏳ SEARCHING...';
 
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL + "?action=lookup&empId=" + encodeURIComponent(query));
-                const res = await response.json();
+            const callbackName = 'googleLookupCB_' + Date.now();
+            let timer = null;
 
-                if (res.found && res.record) {
+            window[callbackName] = function(res) {
+                clearTimeout(timer);
+                delete window[callbackName];
+                const scriptTag = document.getElementById(callbackName);
+                if (scriptTag) scriptTag.remove();
+                btn.disabled = false;
+                btn.textContent = originalText;
+
+                if (res && res.found && res.record) {
                     const r = res.record;
 
                     // Fill Employee Details & Issuance Dates
@@ -1055,7 +1141,6 @@
                     if (r.employeeId) document.getElementById('emp-id').value = r.employeeId;
                     if (r.department) document.getElementById('department').value = r.department;
                     if (r.joiningDate && r.joiningDate !== 'NIL') document.getElementById('joining-date').value = r.joiningDate;
-                    if (r.receivedDate && r.receivedDate !== 'NIL') document.getElementById('received-date').value = r.receivedDate;
                     if (r.issuedBy) document.getElementById('issued-by').value = r.issuedBy;
 
                     if (r.date) document.getElementById('date').value = r.date;
@@ -1088,9 +1173,10 @@
                     if (r.tabBrand) document.getElementById('tab-brand').value = r.tabBrand;
                     if (r.tabSerial) document.getElementById('tab-serial').value = r.tabSerial;
                     if (r.storageCapacity) document.getElementById('storage-capacity').value = r.storageCapacity;
+                    if (r.storageSerial) document.getElementById('storage-serial').value = r.storageSerial;
                     if (r.remarks && r.remarks !== 'N/A') document.getElementById('remarks').value = r.remarks;
 
-                    // Auto-check previously selected assets
+                    // Auto-check previously selected assets & storage devices
                     if (r.assetsIssued) {
                         const issuedList = r.assetsIssued.split(',').map(s => s.trim().toUpperCase());
                         document.querySelectorAll('input[name="assets"]').forEach(cb => {
@@ -1099,17 +1185,89 @@
                             }
                         });
                     }
+                    if (r.storageDevice) {
+                        const storageList = r.storageDevice.split(',').map(s => s.trim().toUpperCase());
+                        document.querySelectorAll('input[name="storage-device"]').forEach(cb => {
+                            if (storageList.includes(cb.value.toUpperCase())) {
+                                cb.checked = true;
+                            }
+                        });
+                        updateStorageFields();
+                    }
 
-                    showCustomAlert('Record Loaded Successfully', 'Existing record for ' + (r.employeeName || query) + ' loaded! You can now check newly issued assets (e.g. Laptop Bag) and re-submit.');
+                    showCustomAlert('Record Loaded Successfully', 'Existing record for ' + (r.employeeName || query) + ' loaded! You can now check newly issued assets and re-submit.');
                 } else {
                     showCustomAlert('Record Not Found', 'No existing record found for ID: ' + query + '. You can proceed to fill out a new form.');
                 }
-            } catch (err) {
-                showCustomAlert('Lookup Error', 'Unable to search record. Please check your internet connection or Google Sheet script deployment.');
-            } finally {
+            };
+
+            timer = setTimeout(() => {
+                delete window[callbackName];
+                const scriptTag = document.getElementById(callbackName);
+                if (scriptTag) scriptTag.remove();
                 btn.disabled = false;
                 btn.textContent = originalText;
+                showCustomAlert('Lookup Search', 'No existing record found or search timed out for ID: ' + query + '.');
+            }, 6000);
+
+            const scriptTag = document.createElement('script');
+            scriptTag.id = callbackName;
+            scriptTag.src = GOOGLE_SCRIPT_URL + "?action=lookup&empId=" + encodeURIComponent(query) + "&callback=" + callbackName;
+            scriptTag.onerror = function() {
+                clearTimeout(timer);
+                delete window[callbackName];
+                scriptTag.remove();
+                btn.disabled = false;
+                btn.textContent = originalText;
+                showCustomAlert('Lookup Search', 'No existing record found for ID: ' + query + '.');
+            };
+            document.body.appendChild(scriptTag);
+        });
+
+        // Dynamic Storage Fields Generator
+        function updateStorageFields() {
+            const container = document.getElementById('storageSpecsContainer');
+            const checkedBoxes = Array.from(document.querySelectorAll('input[name="storage-device"]:checked'))
+                                      .map(cb => cb.value)
+                                      .filter(val => val.toUpperCase() !== 'NIL');
+
+            if (checkedBoxes.length === 0) {
+                container.innerHTML = `
+                    <div class="grid-2">
+                        <div class="field-group">
+                            <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
+                            <input type="text" id="storage-capacity" name="storage-capacity" placeholder="e.g. 64GB / 1TB; NIL if none" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="storage-serial">Storage Device Serial Number <span class="req">*</span></label>
+                            <input type="text" id="storage-serial" name="storage-serial" placeholder="If not assigned, write NIL" required>
+                        </div>
+                    </div>`;
+                return;
             }
+
+            let html = '';
+            checkedBoxes.forEach((deviceName, index) => {
+                const capId = index === 0 ? 'storage-capacity' : `storage-capacity-${index + 1}`;
+                const serialId = index === 0 ? 'storage-serial' : `storage-serial-${index + 1}`;
+
+                html += `
+                    <div class="grid-2" style="margin-bottom: 0.75rem;">
+                        <div class="field-group">
+                            <label for="${capId}">${deviceName} Capacity <span class="req">*</span></label>
+                            <input type="text" id="${capId}" name="${capId}" placeholder="e.g. 64GB / 1TB" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="${serialId}">${deviceName} Serial Number <span class="req">*</span></label>
+                            <input type="text" id="${serialId}" name="${serialId}" placeholder="If not assigned, write NIL" required>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        document.querySelectorAll('input[name="storage-device"]').forEach(cb => {
+            cb.addEventListener('change', updateStorageFields);
         });
 
         // Show Custom Modern Modal Alert
@@ -1131,143 +1289,148 @@
         function getFormData() {
             const form = document.getElementById('issuanceForm');
             const selectedAssets = Array.from(form.querySelectorAll('input[name="assets"]:checked')).map(cb => cb.value).join(', ');
-            const selectedStorage = form.querySelector('input[name="storage-device"]:checked')?.value || 'NIL';
+            const selectedStorage = Array.from(form.querySelectorAll('input[name="storage-device"]:checked')).map(cb => cb.value).join(', ') || 'NIL';
+            const storageCapInputs = Array.from(form.querySelectorAll('input[name^="storage-capacity"]')).map(i => i.value.trim()).filter(Boolean).join(' | ') || 'NIL';
+            const storageSerialInputs = Array.from(form.querySelectorAll('input[name^="storage-serial"]')).map(i => i.value.trim()).filter(Boolean).join(' | ') || 'NIL';
 
             return {
                 timestamp: new Date().toLocaleString(),
                 adminUser: sessionStorage.getItem('skillversity_logged_admin') || 'admin',
-                date: form.querySelector('#date').value,
-                date2: form.querySelector('#date-2').value || 'NIL',
-                date3: form.querySelector('#date-3').value || 'NIL',
-                joiningDate: form.querySelector('#joining-date').value || 'NIL',
-                receivedDate: form.querySelector('#received-date').value || 'NIL',
-                employeeName: form.querySelector('#emp-name').value.toUpperCase(),
-                employeeEmail: form.querySelector('#emp-email').value.trim().toLowerCase(),
-                employeeId: form.querySelector('#emp-id').value.toUpperCase(),
-                department: form.querySelector('#department').value,
-                issuedBy: form.querySelector('#issued-by').value.toUpperCase(),
+                date: form.querySelector('#date')?.value || '',
+                date2: form.querySelector('#date-2')?.value || 'NIL',
+                date3: form.querySelector('#date-3')?.value || 'NIL',
+                joiningDate: form.querySelector('#joining-date')?.value || 'NIL',
+                receivedDate: form.querySelector('#date')?.value || 'NIL',
+                employeeName: (form.querySelector('#emp-name')?.value || '').toUpperCase(),
+                employeeEmail: (form.querySelector('#emp-email')?.value || '').trim().toLowerCase(),
+                employeeId: (form.querySelector('#emp-id')?.value || '').toUpperCase(),
+                department: form.querySelector('#department')?.value || '',
+                issuedBy: (form.querySelector('#issued-by')?.value || '').toUpperCase(),
                 assetsIssued: selectedAssets,
-                laptopBrand: form.querySelector('#laptop-brand').value,
-                laptopSerial: form.querySelector('#laptop-serial').value,
-                laptopChargerSerial: form.querySelector('#laptop-charger-serial').value,
-                headphoneBrand: form.querySelector('#headphone-brand').value,
-                headphoneSerial: form.querySelector('#headphone-serial').value,
-                mouseType: form.querySelector('#mouse-type').value,
-                mouseSerial: form.querySelector('#mouse-serial').value,
-                keyboardType: form.querySelector('#keyboard-type').value,
-                keyboardSerial: form.querySelector('#keyboard-serial').value,
-                mobileBrand: form.querySelector('#mobile-brand').value,
-                simNumber: form.querySelector('#sim-number').value,
-                mobileSerial: form.querySelector('#mobile-serial').value,
-                mobileImei: form.querySelector('#mobile-imei').value,
-                mobileChargerSerial: form.querySelector('#mobile-charger-serial').value,
-                tabBrand: form.querySelector('#tab-brand').value,
-                tabSerial: form.querySelector('#tab-serial').value,
+                laptopBrand: form.querySelector('#laptop-brand')?.value || 'NIL',
+                laptopSerial: form.querySelector('#laptop-serial')?.value || 'NIL',
+                laptopChargerSerial: form.querySelector('#laptop-charger-serial')?.value || 'NIL',
+                headphoneBrand: form.querySelector('#headphone-brand')?.value || 'NIL',
+                headphoneSerial: form.querySelector('#headphone-serial')?.value || 'NIL',
+                mouseType: form.querySelector('#mouse-type')?.value || 'NIL',
+                mouseSerial: form.querySelector('#mouse-serial')?.value || 'NIL',
+                keyboardType: form.querySelector('#keyboard-type')?.value || 'NIL',
+                keyboardSerial: form.querySelector('#keyboard-serial')?.value || 'NIL',
+                mobileBrand: form.querySelector('#mobile-brand')?.value || 'NIL',
+                simNumber: form.querySelector('#sim-number')?.value || 'NIL',
+                mobileSerial: form.querySelector('#mobile-serial')?.value || 'NIL',
+                mobileImei: form.querySelector('#mobile-imei')?.value || 'NIL',
+                mobileChargerSerial: form.querySelector('#mobile-charger-serial')?.value || 'NIL',
+                tabBrand: form.querySelector('#tab-brand')?.value || 'NIL',
+                tabSerial: form.querySelector('#tab-serial')?.value || 'NIL',
                 storageDevice: selectedStorage,
-                storageCapacity: form.querySelector('#storage-capacity').value,
-                remarks: form.querySelector('#remarks').value || 'N/A'
+                storageCapacity: storageCapInputs,
+                storageSerial: storageSerialInputs,
+                remarks: form.querySelector('#remarks')?.value || 'N/A'
             };
         }
 
-        // Build Printable Voucher Layout
+        // Build Printable Voucher Layout with High-Contrast Text
         function buildVoucherHTML(d) {
             return `
-            <div style="font-family: Arial, sans-serif; padding: 25px; color: #0F172A; background: #FFFFFF; width: 750px; border: 2px solid #1E3A8A; border-radius: 8px;">
-                <div style="text-align: center; border-bottom: 2px solid #1E3A8A; padding-bottom: 12px; margin-bottom: 18px;">
-                    <img src="logo.png" style="max-width: 250px; height: auto;" onerror="this.style.display='none';">
-                    <h2 style="color: #1E3A8A; font-size: 24px; font-weight: 800; margin-top: 8px; margin-bottom: 4px; text-transform: uppercase;">ASSET ISSUANCE REPORT</h2>
+            <div style="font-family: Arial, Helvetica, sans-serif; padding: 25px; color: #000000; background: #FFFFFF; width: 750px; border: 2.5px solid #1E3A8A; border-radius: 8px;">
+                <div style="text-align: center; border-bottom: 2.5px solid #1E3A8A; padding-bottom: 12px; margin-bottom: 18px;">
+                    <img src="logo.png" style="max-width: 220px; max-height: 65px; width: auto; height: auto; margin-bottom: 6px; display: inline-block;" onerror="this.style.display='none';">
+                    <div style="font-size: 24px; font-weight: 900; color: #1E3A8A; letter-spacing: 2px; text-transform: uppercase;">SKILLVERSITY</div>
+                    <div style="font-size: 11px; font-weight: 700; color: #FF5722; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px;">IT &amp; OPERATIONS</div>
+                    <h2 style="color: #1E3A8A; font-size: 18px; font-weight: 800; margin-top: 4px; margin-bottom: 4px; text-transform: uppercase;">ASSET ISSUANCE REPORT</h2>
                 </div>
 
-                <div style="margin-bottom: 18px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 6px; padding: 12px;">
-                    <h3 style="color: #1E3A8A; font-size: 14px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">1. Employee Information</h3>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <div style="margin-bottom: 18px; background: #FFFFFF; border: 1.5px solid #1E3A8A; border-radius: 6px; padding: 12px;">
+                    <h3 style="color: #1E3A8A; font-size: 14px; font-weight: 800; border-bottom: 1.5px solid #1E3A8A; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase;">1. Employee Information</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px; color: #000000;">
                         <tr>
-                            <td style="padding: 4px 0; width: 22%;"><strong>Employee Name:</strong></td>
-                            <td style="padding: 4px 0; width: 28%; color: #1E3A8A; font-weight: 700;">${d.employeeName}</td>
-                            <td style="padding: 4px 0; width: 22%;"><strong>Asset Received Date:</strong></td>
-                            <td style="padding: 4px 0; width: 28%;">${d.date}</td>
+                            <td style="padding: 5px 0; width: 22%; color: #000000;"><strong>Employee Name:</strong></td>
+                            <td style="padding: 5px 0; width: 28%; color: #1E3A8A; font-weight: 800;">${d.employeeName}</td>
+                            <td style="padding: 5px 0; width: 22%; color: #000000;"><strong>Asset Received Date:</strong></td>
+                            <td style="padding: 5px 0; width: 28%; color: #000000; font-weight: 700;">${d.date}</td>
                         </tr>
                         <tr>
-                            <td style="padding: 4px 0;"><strong>Employee ID:</strong></td>
-                            <td style="padding: 4px 0; color: #1E3A8A; font-weight: 700;">${d.employeeId}</td>
-                            <td style="padding: 4px 0;"><strong>2nd Asset Issuance Date:</strong></td>
-                            <td style="padding: 4px 0;">${d.date2}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>Employee ID:</strong></td>
+                            <td style="padding: 5px 0; color: #1E3A8A; font-weight: 800;">${d.employeeId}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>2nd Asset Issuance Date:</strong></td>
+                            <td style="padding: 5px 0; color: #000000; font-weight: 700;">${d.date2}</td>
                         </tr>
                         <tr>
-                            <td style="padding: 4px 0;"><strong>Employee Email:</strong></td>
-                            <td style="padding: 4px 0; color: #2563EB;">${d.employeeEmail}</td>
-                            <td style="padding: 4px 0;"><strong>3rd Asset Issuance Date:</strong></td>
-                            <td style="padding: 4px 0;">${d.date3}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>Employee Email:</strong></td>
+                            <td style="padding: 5px 0; color: #1E3A8A; font-weight: 700;">${d.employeeEmail}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>3rd Asset Issuance Date:</strong></td>
+                            <td style="padding: 5px 0; color: #000000; font-weight: 700;">${d.date3}</td>
                         </tr>
                         <tr>
-                            <td style="padding: 4px 0;"><strong>Department:</strong></td>
-                            <td style="padding: 4px 0;">${d.department}</td>
-                            <td style="padding: 4px 0;"><strong>Date of Joining:</strong></td>
-                            <td style="padding: 4px 0;">${d.joiningDate}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>Department:</strong></td>
+                            <td style="padding: 5px 0; color: #000000; font-weight: 700;">${d.department}</td>
+                            <td style="padding: 5px 0; color: #000000;"><strong>Date of Joining:</strong></td>
+                            <td style="padding: 5px 0; color: #000000; font-weight: 700;">${d.joiningDate}</td>
                         </tr>
                     </table>
                 </div>
 
-                <div style="margin-bottom: 18px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 12px;">
-                    <h3 style="color: #1E3A8A; font-size: 14px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">2. Issued Equipment &amp; Serial Details</h3>
+                <div style="margin-bottom: 18px; background: #FFFFFF; border: 1.5px solid #1E3A8A; border-radius: 6px; padding: 12px;">
+                    <h3 style="color: #1E3A8A; font-size: 14px; font-weight: 800; border-bottom: 1.5px solid #1E3A8A; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase;">2. Issued Equipment &amp; Serial Details</h3>
                     
-                    <p style="font-size: 12px; margin-bottom: 10px;"><strong>Assets Selected:</strong> <span style="color: #2563EB; font-weight: 700;">${d.assetsIssued || 'None'}</span></p>
+                    <p style="font-size: 12px; margin-bottom: 10px; color: #000000;"><strong>Assets Selected:</strong> <span style="color: #1E3A8A; font-weight: 800;">${d.assetsIssued || 'None'}</span></p>
 
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #CBD5E1;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; color: #000000; border: 1.5px solid #1E3A8A;">
                         <thead>
-                            <tr style="background: #1E3A8A; color: white; text-align: left;">
-                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 30%;">Equipment Item</th>
-                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 35%;">Brand / Specification</th>
-                                <th style="padding: 6px; border: 1px solid #CBD5E1; width: 35%;">Serial Number / IMEI</th>
+                            <tr style="background: #1E3A8A; color: #FFFFFF; text-align: left; font-weight: 800;">
+                                <th style="padding: 6px; border: 1.5px solid #1E3A8A; width: 28%;">Equipment Item</th>
+                                <th style="padding: 6px; border: 1.5px solid #1E3A8A; width: 36%;">Brand / Specification</th>
+                                <th style="padding: 6px; border: 1.5px solid #1E3A8A; width: 36%;">Serial Number / IMEI</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Laptop</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopBrand}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopSerial}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Laptop</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.laptopBrand}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.laptopSerial}</td>
                             </tr>
-                            <tr style="background: #F8FAFC;">
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Laptop Charger</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.laptopChargerSerial}</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Head Phone</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.headphoneBrand}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">S/N: ${d.headphoneSerial}</td>
-                            </tr>
-                            <tr style="background: #F8FAFC;">
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mouse &amp; Keyboard</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Mouse: ${d.mouseType} | Keyboard: ${d.keyboardType}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Mouse S/N: ${d.mouseSerial} | Kbd S/N: ${d.keyboardSerial}</td>
+                            <tr style="background: #F1F5F9;">
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Laptop Charger</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">N/A</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.laptopChargerSerial}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mobile &amp; SIM</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.mobileBrand} (Phone: ${d.simNumber})</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Serial: ${d.mobileSerial} | IMEI: ${d.mobileImei}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Head Phone</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.headphoneBrand}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">S/N: ${d.headphoneSerial}</td>
                             </tr>
-                            <tr style="background: #F8FAFC;">
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Tab Device</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.tabBrand}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.tabSerial}</td>
+                            <tr style="background: #F1F5F9;">
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Mouse &amp; Keyboard</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">Mouse: ${d.mouseType} | Keyboard: ${d.keyboardType}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">Mouse S/N: ${d.mouseSerial} | Kbd S/N: ${d.keyboardSerial}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Storage Media</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.storageDevice} (${d.storageCapacity})</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Mobile &amp; SIM</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.mobileBrand} (Phone: ${d.simNumber})</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">Serial: ${d.mobileSerial} | IMEI: ${d.mobileImei}</td>
+                            </tr>
+                            <tr style="background: #F1F5F9;">
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Tab Device</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.tabBrand}</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.tabSerial}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px; border: 1px solid #64748B;"><strong>Storage Media</strong></td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">${d.storageDevice} (${d.storageCapacity})</td>
+                                <td style="padding: 6px; border: 1px solid #64748B;">S/N: ${d.storageSerial}</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <p style="font-size: 11px; margin-top: 8px;"><strong>Remarks:</strong> ${d.remarks}</p>
+                    <p style="font-size: 11px; margin-top: 10px; color: #000000;"><strong>Remarks:</strong> ${d.remarks}</p>
                 </div>
 
-                <div style="font-size: 11px; color: #334155; border: 1px dashed #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 30px;">
+                <div style="font-size: 11px; color: #000000; border: 1.5px solid #1E3A8A; padding: 10px; border-radius: 4px; margin-bottom: 30px; background: #F8FAFC;">
                     <strong>Declaration:</strong> I acknowledge receipt of the above-listed equipment and agree to take responsible care of all issued assets. I understand all equipment remains the property of Skillversity and must be returned upon request or termination of employment.
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-top: 35px; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-top: 35px; font-size: 12px; color: #000000;">
                     <div style="text-align: center; width: 45%;">
                         <p style="margin-bottom: 35px;">__________________________________________</p>
                         <p><strong>Employee Signature</strong></p>
@@ -1278,7 +1441,7 @@
                     </div>
                 </div>
 
-                <div style="text-align: center; margin-top: 25px; border-top: 1px solid #E2E8F0; padding-top: 8px; font-size: 10px; color: #94A3B8;">
+                <div style="text-align: center; margin-top: 25px; border-top: 1.5px solid #1E3A8A; padding-top: 8px; font-size: 10px; color: #1E3A8A; font-weight: 700;">
                     Skillversity Official Asset Record &bull; Generated on ${d.timestamp}
                 </div>
             </div>
@@ -1289,23 +1452,28 @@
         document.getElementById('issuanceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Check at least one asset checkbox is checked
+            const checkedAsset = this.querySelector('input[name="assets"]:checked');
+            if (!checkedAsset) {
+                showCustomAlert('Asset Selection Required', 'Please check at least one asset under "Asset(s) Issued".');
+                const assetGrid = this.querySelector('.asset-grid');
+                if (assetGrid) assetGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
             const requiredFields = this.querySelectorAll('[required]');
             let valid = true;
             let firstInvalid = null;
 
             requiredFields.forEach(field => {
-                if (field.type === 'checkbox' || field.type === 'radio') {
-                    const checked = this.querySelector(`input[name="${field.name}"]:checked`);
-                    if (!checked) {
+                if (field.type !== 'checkbox' && field.type !== 'radio') {
+                    if (!field.value.trim()) {
                         valid = false;
+                        field.style.borderColor = '#EF4444';
                         if (!firstInvalid) firstInvalid = field;
+                    } else {
+                        field.style.borderColor = '#CBD5E1';
                     }
-                } else if (!field.value.trim()) {
-                    valid = false;
-                    field.style.borderColor = '#EF4444';
-                    if (!firstInvalid) firstInvalid = field;
-                } else {
-                    field.style.borderColor = '#CBD5E1';
                 }
             });
 
@@ -1344,6 +1512,16 @@
             submissionCounts[empEmailKey] = maxSubmissions + 1;
             localStorage.setItem('skillversity_submission_counts', JSON.stringify(submissionCounts));
 
+            // Save/Update in Local Admin Database Table
+            let localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+            const existingIdx = localDB.findIndex(r => r.employeeId === formData.employeeId || r.employeeEmail === formData.employeeEmail);
+            if (existingIdx >= 0) {
+                localDB[existingIdx] = formData;
+            } else {
+                localDB.push(formData);
+            }
+            localStorage.setItem('skillversity_asset_records_db', JSON.stringify(localDB));
+
             // 1. Send data to Google Sheet silently in background
             if (GOOGLE_SCRIPT_URL) {
                 try {
@@ -1360,23 +1538,42 @@
 
             // 2. Render Voucher offscreen & capture with html2pdf
             const toast = document.getElementById('toast');
-            toast.style.display = 'block';
+            if (toast) toast.style.display = 'block';
 
             const voucherContainer = document.getElementById('voucherContainer');
             voucherContainer.innerHTML = buildVoucherHTML(formData);
             const voucherElement = voucherContainer.firstElementChild;
 
+            const generatePDF = new Promise((resolve, reject) => {
+                try {
+                    const opt = {
+                        margin:       0.2,
+                        filename:     `Skillversity_Asset_Report_${formData.employeeName.replace(/\s+/g, '_')}_${formData.employeeId}.pdf`,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { scale: 2, logging: false, scrollY: 0, scrollX: 0, allowTaint: true },
+                        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    };
+                    
+                    html2pdf().set(opt).from(voucherElement).save()
+                        .then(() => resolve(true))
+                        .catch((err) => reject(err));
+                } catch (err) {
+                    reject(err);
+                }
+            });
+
+            const timeoutPromise = new Promise((resolve) => {
+                setTimeout(() => resolve(false), 3500);
+            });
+
             try {
-                const opt = {
-                    margin:       0.2,
-                    filename:     `Skillversity_Asset_Report_${formData.employeeName.replace(/\s+/g, '_')}_${formData.employeeId}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-                
-                await html2pdf().set(opt).from(voucherElement).save();
+                const pdfDone = await Promise.race([generatePDF, timeoutPromise]);
+                if (!pdfDone) {
+                    console.warn('PDF export timed out, falling back to browser print dialog.');
+                    window.print();
+                }
             } catch (err) {
+                console.warn('PDF export error:', err);
                 window.print();
             }
 
@@ -1386,7 +1583,111 @@
                 // Clear Admin session & automatically logout to Admin Login screen
                 sessionStorage.removeItem('skillversity_logged_admin');
                 window.location.reload();
-            }, 1800);
+            }, 1200);
+        });
+
+        // Local Admin Database Table Functions
+        function renderAdminTable(filterText = '') {
+            const tbody = document.getElementById('adminTableBody');
+            if (!tbody) return;
+            const localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+            const search = filterText.toLowerCase().trim();
+
+            const filtered = localDB.filter(r => {
+                if (!search) return true;
+                return (r.employeeId || '').toLowerCase().includes(search) ||
+                       (r.employeeName || '').toLowerCase().includes(search) ||
+                       (r.employeeEmail || '').toLowerCase().includes(search) ||
+                       (r.department || '').toLowerCase().includes(search) ||
+                       (r.assetsIssued || '').toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 1.5rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found in local database. Submit a form to populate records!</td></tr>`;
+                return;
+            }
+
+            let rowsHtml = '';
+            filtered.forEach((r) => {
+                rowsHtml += `
+                    <tr style="border-bottom: 1px solid #E2E8F0;">
+                        <td style="padding: 8px 10px; font-weight: 700; color: #1E3A8A;">${r.employeeId || 'N/A'}</td>
+                        <td style="padding: 8px 10px; font-weight: 700;">${r.employeeName || 'N/A'}</td>
+                        <td style="padding: 8px 10px; color: #2563EB;">${r.employeeEmail || 'N/A'}</td>
+                        <td style="padding: 8px 10px;">${r.department || 'N/A'}</td>
+                        <td style="padding: 8px 10px;">${r.date || 'N/A'}</td>
+                        <td style="padding: 8px 10px; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${r.assetsIssued}">${r.assetsIssued || 'None'}</td>
+                        <td style="padding: 8px 10px; text-align: center; white-space: nowrap;">
+                            <button type="button" onclick="loadRecordIntoForm('${r.employeeId}')" style="background: #1E3A8A; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; margin-right: 4px;">📝 LOAD</button>
+                            <button type="button" onclick="deleteLocalRecord('${r.employeeId}')" style="background: #EF4444; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        window.loadRecordIntoForm = function(empId) {
+            document.getElementById('emp-id').value = empId;
+            document.getElementById('btnLookup').click();
+            document.getElementById('adminTableSection').style.display = 'none';
+            document.getElementById('issuanceForm').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.deleteLocalRecord = function(empId) {
+            if (confirm('Are you sure you want to delete local record for Employee ID: ' + empId + '?')) {
+                let localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+                localDB = localDB.filter(r => r.employeeId !== empId);
+                localStorage.setItem('skillversity_asset_records_db', JSON.stringify(localDB));
+                renderAdminTable();
+            }
+        };
+
+        // Table UI Toggles & Search
+        document.getElementById('btnToggleTable').addEventListener('click', () => {
+            const sec = document.getElementById('adminTableSection');
+            if (sec.style.display === 'none' || !sec.style.display) {
+                sec.style.display = 'block';
+                renderAdminTable();
+                sec.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                sec.style.display = 'none';
+            }
+        });
+
+        document.getElementById('btnCloseTable').addEventListener('click', () => {
+            document.getElementById('adminTableSection').style.display = 'none';
+        });
+
+        document.getElementById('tableSearchInput').addEventListener('input', (e) => {
+            renderAdminTable(e.target.value);
+        });
+
+        // CSV Export Function
+        document.getElementById('btnExportCSV').addEventListener('click', () => {
+            const localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+            if (localDB.length === 0) {
+                showCustomAlert('Export CSV', 'No local records available to export.');
+                return;
+            }
+
+            const headers = ["Timestamp", "Admin User", "Asset Received Date", "2nd Date", "3rd Date", "Joining Date", "Employee Name", "Employee Email", "Employee ID", "Department", "Issued By", "Assets Issued", "Laptop Brand", "Laptop Serial", "Laptop Charger Serial", "Headphone Brand", "Headphone Serial", "Mouse Type", "Mouse Serial", "Keyboard Type", "Keyboard Serial", "Mobile Brand", "SIM Number", "Mobile Serial", "Mobile IMEI", "Charger Serial", "Tab Brand", "Tab Serial", "Storage Device", "Storage Capacity", "Storage Serial", "Remarks"];
+            
+            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
+            localDB.forEach(r => {
+                const row = [
+                    `"${r.timestamp || ''}"`, `"${r.adminUser || ''}"`, `"${r.date || ''}"`, `"${r.date2 || ''}"`, `"${r.date3 || ''}"`, `"${r.joiningDate || ''}"`, `"${r.employeeName || ''}"`, `"${r.employeeEmail || ''}"`, `"${r.employeeId || ''}"`, `"${r.department || ''}"`, `"${r.issuedBy || ''}"`, `"${(r.assetsIssued || '').replace(/"/g, '""')}"`, `"${r.laptopBrand || ''}"`, `"${r.laptopSerial || ''}"`, `"${r.laptopChargerSerial || ''}"`, `"${r.headphoneBrand || ''}"`, `"${r.headphoneSerial || ''}"`, `"${r.mouseType || ''}"`, `"${r.mouseSerial || ''}"`, `"${r.keyboardType || ''}"`, `"${r.keyboardSerial || ''}"`, `"${r.mobileBrand || ''}"`, `"${r.simNumber || ''}"`, `"${r.mobileSerial || ''}"`, `"${r.mobileImei || ''}"`, `"${r.mobileChargerSerial || ''}"`, `"${r.tabBrand || ''}"`, `"${r.tabSerial || ''}"`, `"${r.storageDevice || ''}"`, `"${r.storageCapacity || ''}"`, `"${r.storageSerial || ''}"`, `"${(r.remarks || '').replace(/"/g, '""')}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Skillversity_Asset_Records_Database_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         });
 
         // Reset error styling on input
