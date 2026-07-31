@@ -713,10 +713,17 @@
                     <span class="section-badge">BLOCK LETTERS</span>
                 </div>
 
+                <!-- 1. Employee Name -->
+                <div class="field-group">
+                    <label for="emp-name">Employee Name <span class="req">*</span></label>
+                    <input type="text" id="emp-name" name="emp-name" placeholder="FULL NAME" class="uppercase" required>
+                </div>
+
+                <!-- 2. Employee Email ID & 3. Employee Joining Date -->
                 <div class="grid-2">
                     <div class="field-group">
-                        <label for="date">Asset Issuance Date <span class="req">*</span></label>
-                        <input type="date" id="date" name="date" required>
+                        <label for="emp-email">Employee Email ID <span class="req">*</span></label>
+                        <input type="email" id="emp-email" name="emp-email" placeholder="name@company.com" required>
                     </div>
                     <div class="field-group">
                         <label for="joining-date">Employee Joining Date <span class="req">*</span></label>
@@ -724,41 +731,33 @@
                     </div>
                 </div>
 
+                <!-- 4. Employee ID -->
+                <div class="field-group">
+                    <label for="emp-id">Employee ID <span class="req">*</span></label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="emp-id" name="emp-id" placeholder="QLI0001" class="uppercase" required style="flex: 1;">
+                        <button type="button" id="btnLookup" title="Load existing record from Google Sheet" style="background: #1E3A8A; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">🔍 LOAD RECORD</button>
+                    </div>
+                </div>
+
+                <!-- Asset Received Date, 2nd Asset Issuance Date & 3rd Asset Issuance Date -->
                 <div class="grid-2">
+                    <div class="field-group">
+                        <label for="date">Asset Received Date <span class="req">*</span></label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
                     <div class="field-group">
                         <label for="date-2">2nd Asset Issuance Date <span class="hint">(If applicable)</span></label>
                         <input type="date" id="date-2" name="date-2">
                     </div>
-                    <div class="field-group">
-                        <label for="date-3">3rd Asset Issuance Date <span class="hint">(If applicable)</span></label>
-                        <input type="date" id="date-3" name="date-3">
-                    </div>
                 </div>
 
                 <div class="field-group">
-                    <label for="received-date">Asset Received Date <span class="hint">(Month, day, year)</span></label>
-                    <input type="date" id="received-date" name="received-date">
+                    <label for="date-3">3rd Asset Issuance Date <span class="hint">(If applicable)</span></label>
+                    <input type="date" id="date-3" name="date-3">
                 </div>
 
-                <div class="field-group">
-                    <label for="emp-name">Employee Name <span class="req">*</span></label>
-                    <input type="text" id="emp-name" name="emp-name" placeholder="FULL NAME" class="uppercase" required>
-                </div>
-
-                <div class="grid-2">
-                    <div class="field-group">
-                        <label for="emp-email">Employee Email ID <span class="req">*</span></label>
-                        <input type="email" id="emp-email" name="emp-email" placeholder="name@company.com" required>
-                    </div>
-                    <div class="field-group">
-                        <label for="emp-id">Employee ID <span class="req">*</span></label>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="emp-id" name="emp-id" placeholder="QLI0001" class="uppercase" required style="flex: 1;">
-                            <button type="button" id="btnLookup" title="Load existing record from Google Sheet" style="background: #1E3A8A; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">🔍 LOAD RECORD</button>
-                        </div>
-                    </div>
-                </div>
-
+                <!-- Department & Asset Issued By -->
                 <div class="grid-2">
                     <div class="field-group">
                         <label for="department">Department <span class="req">*</span></label>
@@ -1181,19 +1180,19 @@
                         <tr>
                             <td style="padding: 4px 0; width: 22%;"><strong>Employee Name:</strong></td>
                             <td style="padding: 4px 0; width: 28%; color: #1E3A8A; font-weight: 700;">${d.employeeName}</td>
-                            <td style="padding: 4px 0; width: 22%;"><strong>1st Issuance Date:</strong></td>
+                            <td style="padding: 4px 0; width: 22%;"><strong>Asset Received Date:</strong></td>
                             <td style="padding: 4px 0; width: 28%;">${d.date}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><strong>Employee ID:</strong></td>
                             <td style="padding: 4px 0; color: #1E3A8A; font-weight: 700;">${d.employeeId}</td>
-                            <td style="padding: 4px 0;"><strong>2nd Issuance Date:</strong></td>
+                            <td style="padding: 4px 0;"><strong>2nd Asset Issuance Date:</strong></td>
                             <td style="padding: 4px 0;">${d.date2}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><strong>Employee Email:</strong></td>
                             <td style="padding: 4px 0; color: #2563EB;">${d.employeeEmail}</td>
-                            <td style="padding: 4px 0;"><strong>3rd Issuance Date:</strong></td>
+                            <td style="padding: 4px 0;"><strong>3rd Asset Issuance Date:</strong></td>
                             <td style="padding: 4px 0;">${d.date3}</td>
                         </tr>
                         <tr>
