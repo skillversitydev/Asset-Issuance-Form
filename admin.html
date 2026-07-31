@@ -3,39 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity - Vercel Admin Portal</title>
+    <title>Skillversity - Vercel Power Admin Portal</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="index.css">
 </head>
 <body style="background: #F1F5F9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; padding: 1.5rem; color: #0F172A; box-sizing: border-box;">
 
-    <!-- 1. VERCEL ADMIN LOGIN PORTAL -->
-    <div id="adminLoginCard" class="login-card" style="max-width: 420px; margin: 3rem auto; background: #FFFFFF; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px solid #CBD5E1;">
+    <!-- 1. VERCEL ADMIN LOGIN PORTAL (EXCLUSIVE PLADMIN ACCESS) -->
+    <div id="adminLoginCard" class="login-card" style="max-width: 440px; margin: 3rem auto; background: #FFFFFF; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px solid #CBD5E1;">
         <div class="login-header" style="text-align: center; margin-bottom: 1.5rem;">
             <img src="logo.png" alt="Skillversity Logo" style="max-height: 55px; width: auto; margin-bottom: 0.5rem;" onerror="this.style.display='none';">
-            <h2 style="color: #1E3A8A; font-size: 1.4rem; font-weight: 800; margin: 0;">VERCEL ADMIN PORTAL</h2>
-            <p style="color: #64748B; font-size: 0.85rem; margin-top: 0.2rem;">Skillversity IT &amp; Operations Database Access</p>
+            <h2 style="color: #1E3A8A; font-size: 1.4rem; font-weight: 800; margin: 0;">POWER ADMIN PORTAL</h2>
+            <p style="color: #64748B; font-size: 0.85rem; margin-top: 0.2rem;">Exclusive Power Level Admin (pladmin) Portal Access</p>
         </div>
 
         <form id="adminLoginForm" class="login-form">
             <div class="field-group" style="margin-bottom: 1rem;">
-                <label for="admin-user" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Admin Username <span style="color:#EF4444">*</span></label>
-                <input type="text" id="admin-user" placeholder="Enter Username (pladmin / admin)" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
+                <label for="admin-user" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Power Admin Username <span style="color:#EF4444">*</span></label>
+                <input type="text" id="admin-user" placeholder="Enter Power Admin Username (pladmin)" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
             </div>
 
             <div class="field-group" style="margin-bottom: 1.5rem;">
-                <label for="admin-pass" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Admin Password <span style="color:#EF4444">*</span></label>
+                <label for="admin-pass" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Power Admin Password <span style="color:#EF4444">*</span></label>
                 <input type="password" id="admin-pass" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
                 <div id="adminLoginError" style="display:none; color: #EF4444; font-size: 0.82rem; font-weight: 700; margin-top: 0.4rem;">⚠️ Incorrect Username or Password! Please enter correct Username and Password</div>
             </div>
 
-            <button type="submit" style="width: 100%; background: #1E3A8A; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;">LOGIN TO VERCEL ADMIN PORTAL</button>
+            <button type="submit" style="width: 100%; background: #1E3A8A; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;">LOGIN AS POWER ADMIN</button>
         </form>
 
-        <p style="text-align: center; margin-top: 1.2rem; font-size: 0.8rem; color: #94A3B8;">🔒 Skillversity HR Administrator Access</p>
+        <p style="text-align: center; margin-top: 1.2rem; font-size: 0.8rem; color: #94A3B8;">🔒 Skillversity Exclusive Power Admin Access</p>
     </div>
 
-    <!-- 2. VERCEL ADMIN RECORDS TABLE DASHBOARD (Visible upon login) -->
+    <!-- 2. VERCEL ADMIN RECORDS TABLE DASHBOARD -->
     <div id="adminPortalContent" style="display: none; max-width: 1240px; margin: 0 auto; background: #FFFFFF; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 2px solid #CBD5E1;">
         
         <!-- Header & Nav -->
@@ -44,11 +44,12 @@
                 <img src="logo.png" alt="Skillversity Logo" style="max-height: 50px; width: auto;" onerror="this.style.display='none';">
                 <div>
                     <h1 style="color: #1E3A8A; font-size: 1.5rem; font-weight: 800; margin: 0;">⚡ VERCEL ADMIN RECORDS DATABASE</h1>
-                    <p style="color: #64748B; font-size: 0.85rem; margin: 0;">Logged in as: <span id="loggedUserDisplay" style="color: #2563EB; font-weight: 700;">pladmin</span></p>
+                    <p style="color: #64748B; font-size: 0.85rem; margin: 0;">Logged in as: <span id="loggedUserDisplay" style="color: #2563EB; font-weight: 700;">pladmin (Power Admin)</span></p>
                 </div>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <a href="index.html" style="background: #1E3A8A; color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">📝 FORM PORTAL</a>
+                <button type="button" id="btnSyncSheet" style="background: #1E3A8A; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s ease;">🔄 SYNC WITH SHEET</button>
+                <a href="index.html" style="background: #3B82F6; color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">📝 FORM PORTAL</a>
                 <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">📥 EXPORT CSV</button>
                 <button type="button" id="btnClearDB" style="background: #EF4444; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">🗑️ CLEAR ALL</button>
                 <button type="button" id="btnAdminLogout" style="background: #64748B; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">LOG OUT</button>
@@ -67,7 +68,7 @@
                 <span id="statTotalRecords" style="font-size: 1.4rem; font-weight: 800; color: #1E3A8A;">0</span>
             </div>
             <div style="background: #ECFDF5; border: 1px solid #A7F3D0; padding: 0.75rem 1.2rem; border-radius: 8px; flex: 1;">
-                <span style="font-size: 0.8rem; color: #065F46; font-weight: 700; display: block;">VERCEL BACKEND STATUS</span>
+                <span style="font-size: 0.8rem; color: #065F46; font-weight: 700; display: block;">GOOGLE SHEETS SYNC ENGINE</span>
                 <span style="font-size: 1.1rem; font-weight: 800; color: #047857;">ONLINE &amp; SYNCHRONIZED</span>
             </div>
         </div>
@@ -99,16 +100,18 @@
     </div>
 
     <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhn5QXYzLx1VjRboa4aTzRkSTbD642Z1UzN7CIBsUdYIjEUR-n0We1s2dtSpJbwDflgQ/exec";
+
         const adminLoginCard = document.getElementById('adminLoginCard');
         const adminPortalContent = document.getElementById('adminPortalContent');
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminLoginError = document.getElementById('adminLoginError');
         const loggedUserDisplay = document.getElementById('loggedUserDisplay');
 
-        // Check active Vercel session
+        // Check active Vercel session (ONLY pladmin allowed)
         const activeSession = sessionStorage.getItem('skillversity_logged_admin');
-        if (activeSession) {
-            showPortal(activeSession);
+        if (activeSession === 'pladmin') {
+            showPortal('pladmin');
         }
 
         adminLoginForm.addEventListener('submit', function(e) {
@@ -116,19 +119,18 @@
             const username = document.getElementById('admin-user').value.trim().toLowerCase();
             const password = document.getElementById('admin-pass').value.trim();
 
-            let isValid = false;
-            if ((username === 'admin' || username === 'admin@skillversity.org') && password === 'admin123') {
-                isValid = true;
-            } else if ((username === 'pladmin' || username === 'pladmin@skillversity.org') && password === 'pladmin123') {
-                isValid = true;
-            }
+            const isPladminUser = (username === 'pladmin' || username === 'pladmin@skillversity.org');
+            const isValidPassword = (password === 'pladmin123');
 
-            if (isValid) {
+            if (isPladminUser && isValidPassword) {
                 adminLoginError.style.display = 'none';
-                const role = username.startsWith('pladmin') ? 'pladmin' : 'admin';
-                sessionStorage.setItem('skillversity_logged_admin', role);
-                showPortal(role);
+                sessionStorage.setItem('skillversity_logged_admin', 'pladmin');
+                showPortal('pladmin');
+            } else if (!isPladminUser && (username === 'admin' || username === 'admin@skillversity.org')) {
+                adminLoginError.textContent = '❌ Access Denied: Only Power Admin (pladmin) is authorized to log into the Vercel Admin Portal.';
+                adminLoginError.style.display = 'block';
             } else {
+                adminLoginError.textContent = '⚠️ Incorrect Username or Password! Please enter correct Username and Password';
                 adminLoginError.style.display = 'block';
             }
         });
@@ -136,7 +138,7 @@
         function showPortal(role) {
             adminLoginCard.style.display = 'none';
             adminPortalContent.style.display = 'block';
-            loggedUserDisplay.textContent = role === 'pladmin' ? 'pladmin (Power Admin)' : 'admin';
+            loggedUserDisplay.textContent = 'pladmin (Power Admin)';
             renderTable();
         }
 
@@ -145,6 +147,69 @@
             adminPortalContent.style.display = 'none';
             adminLoginCard.style.display = 'block';
             document.getElementById('admin-pass').value = '';
+        });
+
+        // 🔄 SYNC ALL RECORDS FROM GOOGLE SHEETS VIA CORS-PROOF JSONP
+        document.getElementById('btnSyncSheet').addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ SYNCING SHEET...';
+
+            const callbackName = 'googleSyncAllCB_' + Date.now();
+            let timer = null;
+
+            window[callbackName] = function(res) {
+                clearTimeout(timer);
+                delete window[callbackName];
+                const scriptTag = document.getElementById(callbackName);
+                if (scriptTag) scriptTag.remove();
+                btn.disabled = false;
+                btn.textContent = originalText;
+
+                if (res && res.found && Array.isArray(res.records)) {
+                    let localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+                    let addedCount = 0;
+                    
+                    res.records.forEach(sheetRecord => {
+                        const idx = localDB.findIndex(r => (r.employeeId && r.employeeId === sheetRecord.employeeId) || (r.employeeEmail && r.employeeEmail === sheetRecord.employeeEmail));
+                        if (idx >= 0) {
+                            localDB[idx] = sheetRecord;
+                        } else {
+                            localDB.push(sheetRecord);
+                            addedCount++;
+                        }
+                    });
+
+                    localStorage.setItem('skillversity_asset_records_db', JSON.stringify(localDB));
+                    renderTable();
+                    alert(`✅ Google Sheet Sync Successful!\n\nLoaded ${res.records.length} records from Google Sheets.\nAll records are now synchronized into your Vercel database table.`);
+                } else {
+                    alert('No records found in Google Sheet or sheet is empty.');
+                }
+            };
+
+            timer = setTimeout(() => {
+                delete window[callbackName];
+                const scriptTag = document.getElementById(callbackName);
+                if (scriptTag) scriptTag.remove();
+                btn.disabled = false;
+                btn.textContent = originalText;
+                alert('Sheet Sync timed out. Please check your internet connection or Google Apps Script deployment.');
+            }, 8000);
+
+            const scriptTag = document.createElement('script');
+            scriptTag.id = callbackName;
+            scriptTag.src = GOOGLE_SCRIPT_URL + "?action=fetchAll&callback=" + callbackName;
+            scriptTag.onerror = function() {
+                clearTimeout(timer);
+                delete window[callbackName];
+                scriptTag.remove();
+                btn.disabled = false;
+                btn.textContent = originalText;
+                alert('Error connecting to Google Sheets Web App.');
+            };
+            document.body.appendChild(scriptTag);
         });
 
         function renderTable(filterText = '') {
@@ -164,7 +229,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found in local database. Submit a form on index.html to populate records!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found. Click "🔄 SYNC WITH SHEET" above to fetch all records directly from Google Sheets!</td></tr>`;
                 return;
             }
 
@@ -206,11 +271,11 @@
         });
 
         document.getElementById('btnClearDB').addEventListener('click', () => {
-            if (confirm('Are you sure you want to CLEAR ALL local database records? This action cannot be undone.')) {
+            if (confirm('Are you sure you want to CLEAR ALL database records? This action cannot be undone.')) {
                 localStorage.removeItem('skillversity_asset_records_db');
                 localStorage.removeItem('skillversity_submission_counts');
                 renderTable();
-                alert('All local database records cleared successfully!');
+                alert('All database records cleared successfully!');
             }
         });
 
