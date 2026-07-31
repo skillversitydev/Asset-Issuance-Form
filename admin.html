@@ -49,6 +49,7 @@
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                 <button type="button" id="btnSyncSheet" style="background: #1E3A8A; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s ease;">🔄 SYNC WITH SHEET</button>
+                <button type="button" id="btnRefreshTable" style="background: #0284C7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s ease;">♻️ REFRESH TABLE</button>
                 <a href="index.html" style="background: #3B82F6; color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">📝 FORM PORTAL</a>
                 <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">📥 EXPORT CSV</button>
                 <button type="button" id="btnClearDB" style="background: #EF4444; color: white; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">🗑️ CLEAR ALL</button>
@@ -211,6 +212,18 @@
             };
             document.body.appendChild(scriptTag);
         });
+
+        // ♻️ REFRESH TABLE BUTTON
+        const btnRefresh = document.getElementById('btnRefreshTable');
+        if (btnRefresh) {
+            btnRefresh.addEventListener('click', () => {
+                btnRefresh.textContent = '⏳ REFRESHING...';
+                renderTable(document.getElementById('searchInput').value);
+                setTimeout(() => {
+                    btnRefresh.textContent = '♻️ REFRESH TABLE';
+                }, 350);
+            });
+        }
 
         function renderTable(filterText = '') {
             const tbody = document.getElementById('tableBody');
