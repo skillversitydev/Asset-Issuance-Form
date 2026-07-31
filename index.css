@@ -340,18 +340,97 @@ select {
     font-weight: 600;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-    body { padding: 1rem 0.5rem; }
-    .main-card { padding: 1.5rem 1.25rem; }
-    .grid-2 { grid-template-columns: 1fr; }
-    .asset-grid { grid-template-columns: 1fr; }
+/* Mobile & Tablet Responsive Enhancements */
+@media (max-width: 768px) {
+    body { 
+        padding: 0.75rem 0.5rem; 
+    }
+    
+    .main-card { 
+        padding: 1.5rem 1rem; 
+        border-radius: 16px;
+    }
+
+    .form-main-title {
+        font-size: 1.4rem;
+    }
+
+    .form-sub-title {
+        font-size: 0.85rem;
+    }
+
+    .logo-img {
+        max-width: 240px;
+    }
+
+    .grid-2 { 
+        grid-template-columns: 1fr; 
+        gap: 1rem;
+    }
+
+    .asset-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 0.65rem;
+    }
+
+    /* Prevent auto-zoom on iOS Safari by ensuring font-size >= 16px */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        padding: 0.85rem 0.9rem;
+    }
+
+    .section-box {
+        padding: 1.25rem 1rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+
+    .user-nav-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .logout-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .asset-grid { 
+        grid-template-columns: 1fr; 
+    }
+
+    .field-group div[style*="display: flex"] {
+        flex-direction: column;
+    }
+
+    #btnLookup {
+        width: 100%;
+        margin-top: 0.35rem;
+        padding: 0.85rem !important;
+    }
+
+    .submit-button {
+        font-size: 1rem;
+        padding: 1rem;
+    }
 }
 
 /* Print styles */
 @media print {
     body { background: white !important; padding: 0 !important; }
     .main-card { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
-    .submit-button, .footer { display: none !important; }
+    .submit-button, .footer, .user-nav-bar { display: none !important; }
     .section-box { break-inside: avoid; border: 1px solid #CBD5E1 !important; }
 }

@@ -667,12 +667,13 @@
         <form id="loginForm" class="login-form">
             <div class="field-group">
                 <label for="login-email">Admin Username <span class="req">*</span></label>
-                <input type="text" id="login-email" placeholder="admin" required>
+                <input type="text" id="login-email" placeholder="Enter Admin Username" required>
             </div>
 
             <div class="field-group">
                 <label for="login-password">Admin Password <span class="req">*</span></label>
                 <input type="password" id="login-password" placeholder="••••••••" required>
+                <div id="login-error" style="display:none; color: #EF4444; font-size: 0.85rem; font-weight: 700; margin-top: 0.4rem;">⚠️ Incorrect Username or Password! Please enter correct Username and Password</div>
             </div>
 
             <button type="submit" class="login-btn">LOGIN AS ADMIN</button>
@@ -999,13 +1000,16 @@
             e.preventDefault();
             const username = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
+            const loginError = document.getElementById('login-error');
 
             // Strict Admin Credentials Check
             if ((username === 'admin' || username === 'admin@skillversity.org') && password === 'admin123') {
+                if (loginError) loginError.style.display = 'none';
                 sessionStorage.setItem('skillversity_logged_admin', 'admin');
                 showMainPortal('admin');
             } else {
-                showCustomAlert('Access Denied', 'Invalid Admin credentials. Please enter Username: admin and Password: admin123');
+                if (loginError) loginError.style.display = 'block';
+                showCustomAlert('Access Denied', 'Incorrect Username or Password! Please enter correct Username and Password');
             }
         });
 
