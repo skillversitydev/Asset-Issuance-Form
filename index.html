@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity | Asset Issuance Form</title>
-    <meta name="description" content="Skillversity internal employee asset issuance form.">
+    <title>Skillversity | Employee Portal Login</title>
+    <meta name="description" content="Skillversity internal employee asset issuance form and login portal.">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png?v=2">
@@ -50,11 +50,89 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 2.5rem 1rem;
+            align-items: center;
+            padding: 2rem 1rem;
         }
 
+        /* LOGIN PORTAL CARD */
+        .login-card {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.15);
+            padding: 2.5rem;
+            border: 1px solid #E2E8F0;
+            animation: fadeInScale 0.35s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            max-width: 260px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1.25rem;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1E3A8A;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 87, 34, 0.35);
+        }
+
+        .login-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94A3B8;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        /* MAIN APP CARD (Hidden initially) */
         .main-card {
+            display: none;
             background: var(--bg-card);
             width: 100%;
             max-width: 840px;
@@ -63,6 +141,46 @@
             padding: 2.5rem;
             border: 1px solid #E2E8F0;
             position: relative;
+            animation: fadeIn 0.4s ease;
+            margin: 2rem 0;
+        }
+
+        /* User Header Bar when logged in */
+        .user-nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            padding: 0.65rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.88rem;
+            color: #1E40AF;
+        }
+
+        .user-nav-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: #FFFFFF;
+            color: var(--danger);
+            border: 1px solid #FCA5A5;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
         }
 
         /* Header & Logo Sizing */
@@ -190,6 +308,7 @@
         /* Inputs */
         input[type="text"],
         input[type="email"],
+        input[type="password"],
         input[type="date"],
         select,
         textarea {
@@ -463,6 +582,11 @@
             to { opacity: 1; }
         }
 
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         @keyframes popUp {
             from { opacity: 0; transform: scale(0.85); }
             to { opacity: 1; transform: scale(1); }
@@ -481,6 +605,9 @@
         @media (max-width: 640px) {
             body { 
                 padding: 0.75rem 0.5rem; 
+            }
+            .login-card {
+                padding: 1.75rem 1.25rem;
             }
             .main-card { 
                 padding: 1.25rem 1rem; 
@@ -528,7 +655,44 @@
     </style>
 </head>
 <body>
-    <main class="main-card">
+
+    <!-- 1. ADMIN LOGIN PORTAL SECTION -->
+    <div id="loginCard" class="login-card">
+        <div class="login-header">
+            <img src="logo.png" alt="Skillversity Logo" class="login-logo" onerror="this.style.display='none';">
+            <h2 class="login-title">ADMIN LOGIN</h2>
+            <p class="login-subtitle">HR Administrator Portal Access</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <div class="field-group">
+                <label for="login-email">Admin Username <span class="req">*</span></label>
+                <input type="text" id="login-email" placeholder="admin" required>
+            </div>
+
+            <div class="field-group">
+                <label for="login-password">Admin Password <span class="req">*</span></label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="login-btn">LOGIN AS ADMIN</button>
+        </form>
+
+        <p class="login-hint">🔒 Skillversity HR Administrator Access</p>
+    </div>
+
+    <!-- 2. MAIN ASSET ISSUANCE FORM SECTION -->
+    <main id="mainCard" class="main-card">
+        
+        <!-- Admin Top Session Bar -->
+        <div class="user-nav-bar">
+            <div class="user-nav-info">
+                <span>🛡️ Logged in as Admin:</span>
+                <span id="activeUserEmail" style="color: #2563EB;">admin@skillversity.org</span>
+            </div>
+            <button type="button" id="btnLogout" class="logout-btn">ADMIN LOGOUT</button>
+        </div>
+
         <!-- Header & Logo -->
         <header class="brand-header">
             <div class="logo-container">
@@ -551,13 +715,29 @@
 
                 <div class="grid-2">
                     <div class="field-group">
-                        <label for="date">Date <span class="req">*</span></label>
+                        <label for="date">1st Issuance Date <span class="req">*</span></label>
                         <input type="date" id="date" name="date" required>
                     </div>
                     <div class="field-group">
-                        <label for="received-date">Asset Received Date <span class="hint">(Month, day, year)</span></label>
-                        <input type="date" id="received-date" name="received-date">
+                        <label for="joining-date">Employee Joining Date <span class="req">*</span></label>
+                        <input type="date" id="joining-date" name="joining-date" required>
                     </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="date-2">2nd Issuance Date <span class="hint">(If applicable)</span></label>
+                        <input type="date" id="date-2" name="date-2">
+                    </div>
+                    <div class="field-group">
+                        <label for="date-3">3rd Issuance Date <span class="hint">(If applicable)</span></label>
+                        <input type="date" id="date-3" name="date-3">
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="received-date">Asset Received Date <span class="hint">(Month, day, year)</span></label>
+                    <input type="date" id="received-date" name="received-date">
                 </div>
 
                 <div class="field-group">
@@ -572,7 +752,10 @@
                     </div>
                     <div class="field-group">
                         <label for="emp-id">Employee ID <span class="req">*</span></label>
-                        <input type="text" id="emp-id" name="emp-id" placeholder="SV-10024" class="uppercase" required>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="emp-id" name="emp-id" placeholder="QLI0001" class="uppercase" required style="flex: 1;">
+                            <button type="button" id="btnLookup" title="Load existing record from Google Sheet" style="background: #1E3A8A; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">🔍 LOAD RECORD</button>
+                        </div>
                     </div>
                 </div>
 
@@ -622,6 +805,7 @@
                         <label class="asset-item"><input type="checkbox" name="assets" value="KEYBOARD"> KEYBOARD</label>
                         <label class="asset-item"><input type="checkbox" name="assets" value="MEMORY CARD"> MEMORY CARD</label>
                         <label class="asset-item"><input type="checkbox" name="assets" value="HEAD PHONE"> HEAD PHONE</label>
+                        <label class="asset-item"><input type="checkbox" name="assets" value="SIM CARD"> SIM CARD</label>
                     </div>
                 </div>
 
@@ -641,9 +825,15 @@
                     <input type="text" id="laptop-charger-serial" name="laptop-charger-serial" placeholder="If not assigned, write NIL" required>
                 </div>
 
-                <div class="field-group">
-                    <label for="headphone-brand">Head Phone Brand <span class="req">*</span></label>
-                    <input type="text" id="headphone-brand" name="headphone-brand" placeholder="If not assigned, write NIL" required>
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label for="headphone-brand">Head Phone Brand <span class="req">*</span></label>
+                        <input type="text" id="headphone-brand" name="headphone-brand" placeholder="If not assigned, write NIL" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="headphone-serial">Head Phone Serial Number <span class="req">*</span></label>
+                        <input type="text" id="headphone-serial" name="headphone-serial" placeholder="If not assigned, write NIL" required>
+                    </div>
                 </div>
 
                 <div class="grid-2">
@@ -657,6 +847,13 @@
                         </select>
                     </div>
                     <div class="field-group">
+                        <label for="mouse-serial">Mouse Serial Number <span class="req">*</span></label>
+                        <input type="text" id="mouse-serial" name="mouse-serial" placeholder="If not assigned, write NIL" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field-group">
                         <label for="keyboard-type">Keyboard Type <span class="req">*</span></label>
                         <select id="keyboard-type" name="keyboard-type" required>
                             <option value="" disabled selected>Select</option>
@@ -665,11 +862,20 @@
                             <option value="NIL">NIL</option>
                         </select>
                     </div>
+                    <div class="field-group">
+                        <label for="keyboard-serial">Keyboard Serial Number <span class="req">*</span></label>
+                        <input type="text" id="keyboard-serial" name="keyboard-serial" placeholder="If not assigned, write NIL" required>
+                    </div>
                 </div>
 
                 <div class="field-group">
                     <label for="mobile-brand">Mobile Brand <span class="req">*</span></label>
                     <input type="text" id="mobile-brand" name="mobile-brand" placeholder="If not assigned, write NIL" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="sim-number">SIM / Mobile Phone Number <span class="req">*</span></label>
+                    <input type="text" id="sim-number" name="sim-number" placeholder="If not assigned, write NIL" required>
                 </div>
 
                 <div class="field-group">
@@ -774,7 +980,134 @@
         document.getElementById('date').valueAsDate = new Date();
 
         // Configurable Google Sheet Webhook URL (Silent Background Sync)
-        const GOOGLE_SCRIPT_URL = localStorage.getItem('skillversity_sheet_url') || "https://script.google.com/macros/s/AKfycbzj8bi8ch8tqY29yhH6FDl6hLoWyNyATaPmrvAvd5D9IGUufARz-rqTxRMjqk_6awdy2A/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMKSeWLfMlgCMBq0FPybZGhBJp6MY9ggA2s3nqV-0_-4UjwsyiXhfED1tRuGWeT11w-w/exec";
+
+        // Login & Session Management
+        const loginCard = document.getElementById('loginCard');
+        const mainCard = document.getElementById('mainCard');
+        const loginForm = document.getElementById('loginForm');
+        const activeUserEmail = document.getElementById('activeUserEmail');
+        const btnLogout = document.getElementById('btnLogout');
+        const empEmailInput = document.getElementById('emp-email');
+
+        // Check active Admin session on load
+        const sessionAdmin = sessionStorage.getItem('skillversity_logged_admin');
+        if (sessionAdmin) {
+            showMainPortal(sessionAdmin);
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            // Strict Admin Credentials Check
+            if ((username === 'admin' || username === 'admin@skillversity.org') && password === 'admin123') {
+                sessionStorage.setItem('skillversity_logged_admin', 'admin');
+                showMainPortal('admin');
+            } else {
+                showCustomAlert('Access Denied', 'Invalid Admin credentials. Please enter Username: admin and Password: admin123');
+            }
+        });
+
+        function showMainPortal(adminUser) {
+            loginCard.style.display = 'none';
+            mainCard.style.display = 'block';
+            activeUserEmail.textContent = adminUser;
+        }
+
+        btnLogout.addEventListener('click', function() {
+            sessionStorage.removeItem('skillversity_logged_admin');
+            mainCard.style.display = 'none';
+            loginCard.style.display = 'block';
+            document.getElementById('login-password').value = '';
+        });
+
+        // 🔍 LOAD EXISTING RECORD FROM GOOGLE SHEET
+        document.getElementById('btnLookup').addEventListener('click', async function() {
+            const empIdInput = document.getElementById('emp-id');
+            const empEmailInput = document.getElementById('emp-email');
+            const query = (empIdInput.value || empEmailInput.value || '').trim();
+
+            if (!query) {
+                showCustomAlert('Lookup Search', 'Please enter an Employee ID or Email ID to search existing records.');
+                return;
+            }
+
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ SEARCHING...';
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + "?action=lookup&empId=" + encodeURIComponent(query));
+                const res = await response.json();
+
+                if (res.found && res.record) {
+                    const r = res.record;
+
+                    // Fill Employee Details & Issuance Dates
+                    if (r.employeeName) document.getElementById('emp-name').value = r.employeeName;
+                    if (r.employeeEmail) document.getElementById('emp-email').value = r.employeeEmail;
+                    if (r.employeeId) document.getElementById('emp-id').value = r.employeeId;
+                    if (r.department) document.getElementById('department').value = r.department;
+                    if (r.joiningDate && r.joiningDate !== 'NIL') document.getElementById('joining-date').value = r.joiningDate;
+                    if (r.receivedDate && r.receivedDate !== 'NIL') document.getElementById('received-date').value = r.receivedDate;
+                    if (r.issuedBy) document.getElementById('issued-by').value = r.issuedBy;
+
+                    if (r.date) document.getElementById('date').value = r.date;
+                    if (r.date2 && r.date2 !== 'NIL') {
+                        document.getElementById('date-2').value = r.date2;
+                    } else {
+                        document.getElementById('date-2').valueAsDate = new Date();
+                    }
+                    if (r.date3 && r.date3 !== 'NIL') {
+                        document.getElementById('date-3').value = r.date3;
+                    } else if (r.date2 && r.date2 !== 'NIL') {
+                        document.getElementById('date-3').valueAsDate = new Date();
+                    }
+
+                    // Fill Hardware Specs
+                    if (r.laptopBrand) document.getElementById('laptop-brand').value = r.laptopBrand;
+                    if (r.laptopSerial) document.getElementById('laptop-serial').value = r.laptopSerial;
+                    if (r.laptopChargerSerial) document.getElementById('laptop-charger-serial').value = r.laptopChargerSerial;
+                    if (r.headphoneBrand) document.getElementById('headphone-brand').value = r.headphoneBrand;
+                    if (r.headphoneSerial) document.getElementById('headphone-serial').value = r.headphoneSerial;
+                    if (r.mouseType) document.getElementById('mouse-type').value = r.mouseType;
+                    if (r.mouseSerial) document.getElementById('mouse-serial').value = r.mouseSerial;
+                    if (r.keyboardType) document.getElementById('keyboard-type').value = r.keyboardType;
+                    if (r.keyboardSerial) document.getElementById('keyboard-serial').value = r.keyboardSerial;
+                    if (r.mobileBrand) document.getElementById('mobile-brand').value = r.mobileBrand;
+                    if (r.simNumber) document.getElementById('sim-number').value = r.simNumber;
+                    if (r.mobileSerial) document.getElementById('mobile-serial').value = r.mobileSerial;
+                    if (r.mobileImei) document.getElementById('mobile-imei').value = r.mobileImei;
+                    if (r.mobileChargerSerial) document.getElementById('mobile-charger-serial').value = r.mobileChargerSerial;
+                    if (r.tabBrand) document.getElementById('tab-brand').value = r.tabBrand;
+                    if (r.tabSerial) document.getElementById('tab-serial').value = r.tabSerial;
+                    if (r.storageCapacity) document.getElementById('storage-capacity').value = r.storageCapacity;
+                    if (r.remarks && r.remarks !== 'N/A') document.getElementById('remarks').value = r.remarks;
+
+                    // Auto-check previously selected assets
+                    if (r.assetsIssued) {
+                        const issuedList = r.assetsIssued.split(',').map(s => s.trim().toUpperCase());
+                        document.querySelectorAll('input[name="assets"]').forEach(cb => {
+                            if (issuedList.includes(cb.value.toUpperCase())) {
+                                cb.checked = true;
+                            }
+                        });
+                    }
+
+                    showCustomAlert('Record Loaded Successfully', 'Existing record for ' + (r.employeeName || query) + ' loaded! You can now check newly issued assets (e.g. Laptop Bag) and re-submit.');
+                } else {
+                    showCustomAlert('Record Not Found', 'No existing record found for ID: ' + query + '. You can proceed to fill out a new form.');
+                }
+            } catch (err) {
+                showCustomAlert('Lookup Error', 'Unable to search record. Please check your internet connection or Google Sheet script deployment.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
 
         // Show Custom Modern Modal Alert
         function showCustomAlert(title, message) {
@@ -799,7 +1132,11 @@
 
             return {
                 timestamp: new Date().toLocaleString(),
+                adminUser: sessionStorage.getItem('skillversity_logged_admin') || 'admin',
                 date: form.querySelector('#date').value,
+                date2: form.querySelector('#date-2').value || 'NIL',
+                date3: form.querySelector('#date-3').value || 'NIL',
+                joiningDate: form.querySelector('#joining-date').value || 'NIL',
                 receivedDate: form.querySelector('#received-date').value || 'NIL',
                 employeeName: form.querySelector('#emp-name').value.toUpperCase(),
                 employeeEmail: form.querySelector('#emp-email').value.trim().toLowerCase(),
@@ -811,9 +1148,13 @@
                 laptopSerial: form.querySelector('#laptop-serial').value,
                 laptopChargerSerial: form.querySelector('#laptop-charger-serial').value,
                 headphoneBrand: form.querySelector('#headphone-brand').value,
+                headphoneSerial: form.querySelector('#headphone-serial').value,
                 mouseType: form.querySelector('#mouse-type').value,
+                mouseSerial: form.querySelector('#mouse-serial').value,
                 keyboardType: form.querySelector('#keyboard-type').value,
+                keyboardSerial: form.querySelector('#keyboard-serial').value,
                 mobileBrand: form.querySelector('#mobile-brand').value,
+                simNumber: form.querySelector('#sim-number').value,
                 mobileSerial: form.querySelector('#mobile-serial').value,
                 mobileImei: form.querySelector('#mobile-imei').value,
                 mobileChargerSerial: form.querySelector('#mobile-charger-serial').value,
@@ -840,24 +1181,26 @@
                         <tr>
                             <td style="padding: 4px 0; width: 22%;"><strong>Employee Name:</strong></td>
                             <td style="padding: 4px 0; width: 28%; color: #1E3A8A; font-weight: 700;">${d.employeeName}</td>
-                            <td style="padding: 4px 0; width: 22%;"><strong>Date of Issuance:</strong></td>
+                            <td style="padding: 4px 0; width: 22%;"><strong>1st Issuance Date:</strong></td>
                             <td style="padding: 4px 0; width: 28%;">${d.date}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><strong>Employee ID:</strong></td>
                             <td style="padding: 4px 0; color: #1E3A8A; font-weight: 700;">${d.employeeId}</td>
-                            <td style="padding: 4px 0;"><strong>Asset Received Date:</strong></td>
-                            <td style="padding: 4px 0;">${d.receivedDate}</td>
+                            <td style="padding: 4px 0;"><strong>2nd Issuance Date:</strong></td>
+                            <td style="padding: 4px 0;">${d.date2}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><strong>Employee Email:</strong></td>
                             <td style="padding: 4px 0; color: #2563EB;">${d.employeeEmail}</td>
-                            <td style="padding: 4px 0;"><strong>Asset Issued By:</strong></td>
-                            <td style="padding: 4px 0; font-weight: 700;">${d.issuedBy}</td>
+                            <td style="padding: 4px 0;"><strong>3rd Issuance Date:</strong></td>
+                            <td style="padding: 4px 0;">${d.date3}</td>
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><strong>Department:</strong></td>
-                            <td style="padding: 4px 0;" colspan="3">${d.department}</td>
+                            <td style="padding: 4px 0;">${d.department}</td>
+                            <td style="padding: 4px 0;"><strong>Date of Joining:</strong></td>
+                            <td style="padding: 4px 0;">${d.joiningDate}</td>
                         </tr>
                     </table>
                 </div>
@@ -889,16 +1232,16 @@
                             <tr>
                                 <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Head Phone</strong></td>
                                 <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.headphoneBrand}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">S/N: ${d.headphoneSerial}</td>
                             </tr>
                             <tr style="background: #F8FAFC;">
                                 <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mouse &amp; Keyboard</strong></td>
                                 <td style="padding: 5px; border: 1px solid #CBD5E1;">Mouse: ${d.mouseType} | Keyboard: ${d.keyboardType}</td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">N/A</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">Mouse S/N: ${d.mouseSerial} | Kbd S/N: ${d.keyboardSerial}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mobile Device</strong></td>
-                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.mobileBrand} (Charger: ${d.mobileChargerSerial})</td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;"><strong>Mobile &amp; SIM</strong></td>
+                                <td style="padding: 5px; border: 1px solid #CBD5E1;">${d.mobileBrand} (Phone: ${d.simNumber})</td>
                                 <td style="padding: 5px; border: 1px solid #CBD5E1;">Serial: ${d.mobileSerial} | IMEI: ${d.mobileImei}</td>
                             </tr>
                             <tr style="background: #F8FAFC;">
@@ -978,16 +1321,25 @@
 
             const formData = getFormData();
 
-            // Enforce "One ID / Email can fill one sheet" rule
-            const submittedRecords = JSON.parse(localStorage.getItem('skillversity_submitted_ids') || '[]');
-            if (submittedRecords.includes(formData.employeeId) || submittedRecords.includes(formData.employeeEmail)) {
-                showCustomAlert('Submission Blocked', 'An Asset Issuance record has already been submitted for Employee ID: ' + formData.employeeId + ' (' + formData.employeeEmail + '). Each Employee ID / Email ID can fill only one asset issuance form.');
+            // Enforce limit of 3 submissions per Employee ID / Email ID
+            const submissionCounts = JSON.parse(localStorage.getItem('skillversity_submission_counts') || '{}');
+            const empIdKey = formData.employeeId;
+            const empEmailKey = formData.employeeEmail;
+            
+            const currentCountId = submissionCounts[empIdKey] || 0;
+            const currentCountEmail = submissionCounts[empEmailKey] || 0;
+            const maxSubmissions = Math.max(currentCountId, currentCountEmail);
+
+            if (maxSubmissions >= 3) {
+                showCustomAlert('Submission Limit Reached', 'Employee ID: ' + formData.employeeId + ' (' + formData.employeeEmail + ') has reached the maximum limit of 3 asset issuance form submissions.');
                 btn.disabled = false;
                 btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
                 return;
             }
-            submittedRecords.push(formData.employeeId, formData.employeeEmail);
-            localStorage.setItem('skillversity_submitted_ids', JSON.stringify(submittedRecords));
+
+            submissionCounts[empIdKey] = maxSubmissions + 1;
+            submissionCounts[empEmailKey] = maxSubmissions + 1;
+            localStorage.setItem('skillversity_submission_counts', JSON.stringify(submissionCounts));
 
             // 1. Send data to Google Sheet silently in background
             if (GOOGLE_SCRIPT_URL) {
@@ -1028,6 +1380,8 @@
             setTimeout(() => {
                 btn.disabled = false;
                 btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
+                // Clear Admin session & automatically logout to Admin Login screen
+                sessionStorage.removeItem('skillversity_logged_admin');
                 window.location.reload();
             }, 1800);
         });
