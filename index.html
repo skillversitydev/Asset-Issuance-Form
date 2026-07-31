@@ -1141,6 +1141,36 @@
             document.getElementById('login-password').value = '';
         });
 
+        // Robust Date Formatter for HTML5 <input type="date"> (Converts DD/MM/YYYY, ISO, etc. to YYYY-MM-DD)
+        function formatDateForInput(dateVal) {
+            if (!dateVal || dateVal === 'NIL' || dateVal === 'N/A') return '';
+            const str = String(dateVal).trim();
+
+            // Already YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+
+            // Try parsing Date object
+            const d = new Date(str);
+            if (!isNaN(d.getTime())) {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Fallback for DD/MM/YYYY or DD-MM-YYYY
+            const parts = str.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                if (parts[2].length === 4) { // DD/MM/YYYY
+                    const day = parts[0].padStart(2, '0');
+                    const month = parts[1].padStart(2, '0');
+                    const year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            return '';
+        }
+
         // 🔍 LOAD EXISTING RECORD FROM GOOGLE SHEET (100% CORS-Proof JSONP)
         document.getElementById('btnLookup').addEventListener('click', function() {
             const empIdInput = document.getElementById('emp-id');
@@ -1176,18 +1206,25 @@
                     if (r.employeeEmail) document.getElementById('emp-email').value = r.employeeEmail;
                     if (r.employeeId) document.getElementById('emp-id').value = r.employeeId;
                     if (r.department) document.getElementById('department').value = r.department;
-                    if (r.joiningDate && r.joiningDate !== 'NIL') document.getElementById('joining-date').value = r.joiningDate;
                     if (r.issuedBy) document.getElementById('issued-by').value = r.issuedBy;
 
-                    if (r.date) document.getElementById('date').value = r.date;
-                    if (r.date2 && r.date2 !== 'NIL') {
-                        document.getElementById('date-2').value = r.date2;
+                    const joiningVal = formatDateForInput(r.joiningDate);
+                    if (joiningVal) document.getElementById('joining-date').value = joiningVal;
+
+                    const dateVal = formatDateForInput(r.date || r.receivedDate);
+                    if (dateVal) document.getElementById('date').value = dateVal;
+
+                    const date2Val = formatDateForInput(r.date2);
+                    if (date2Val) {
+                        document.getElementById('date-2').value = date2Val;
                     } else {
                         document.getElementById('date-2').valueAsDate = new Date();
                     }
-                    if (r.date3 && r.date3 !== 'NIL') {
-                        document.getElementById('date-3').value = r.date3;
-                    } else if (r.date2 && r.date2 !== 'NIL') {
+
+                    const date3Val = formatDateForInput(r.date3);
+                    if (date3Val) {
+                        document.getElementById('date-3').value = date3Val;
+                    } else if (date2Val) {
                         document.getElementById('date-3').valueAsDate = new Date();
                     }
 
