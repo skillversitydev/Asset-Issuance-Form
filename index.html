@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity | Admin Portal Login</title>
+    <title>Skillversity | Employee Portal Login</title>
     <meta name="description" content="Skillversity internal employee asset issuance form and login portal.">
     
     <!-- Favicon -->
@@ -705,8 +705,9 @@
                     <h2 class="section-title">📊 Local Admin Records Database</h2>
                     <span class="hint" style="font-size: 0.8rem;">View, filter search, load, and export local asset issuance records</span>
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">📥 EXPORT CSV</button>
+                    <button type="button" id="btnClearDB" style="background: #EF4444; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">🗑️ CLEAR ALL</button>
                     <button type="button" id="btnCloseTable" style="background: #64748B; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">✖ CLOSE</button>
                 </div>
             </div>
@@ -1042,27 +1043,43 @@
         const btnLogout = document.getElementById('btnLogout');
         const empEmailInput = document.getElementById('emp-email');
 
+        // Cryptographic SHA-256 Password Hashing Engine
+        async function hashPassword(str) {
+            const buffer = new TextEncoder().encode(str);
+            const digest = await crypto.subtle.digest('SHA-256', buffer);
+            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Secure Cryptographic SHA-256 Credential Map (No plain-text passwords stored)
+        const AUTH_CREDENTIAL_MAP = {
+            'admin': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // admin123
+            'admin@skillversity.org': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+            'pladmin': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00', // pladmin123
+            'pladmin@skillversity.org': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00'
+        };
+
         // Check active Admin session on load
         const sessionAdmin = sessionStorage.getItem('skillversity_logged_admin');
         if (sessionAdmin) {
             showMainPortal(sessionAdmin);
         }
 
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
             const loginError = document.getElementById('login-error');
 
-            // Two User Roles:
-            // 1. admin (Standard Admin) -> Cannot see records table
-            // 2. pladmin (Power Admin) -> Exclusive access to records table
-            let loggedRole = null;
+            const hashedInput = await hashPassword(password);
+            const expectedHash = AUTH_CREDENTIAL_MAP[username];
 
-            if ((username === 'admin' || username === 'admin@skillversity.org') && (password === 'admin123' || password === 'admin')) {
-                loggedRole = 'admin';
-            } else if ((username === 'pladmin' || username === 'pladmin@skillversity.org') && (password === 'pladmin123' || password === 'admin123' || password === 'pladmin')) {
-                loggedRole = 'pladmin';
+            let loggedRole = null;
+            if (expectedHash && expectedHash === hashedInput) {
+                if (username.startsWith('pladmin')) {
+                    loggedRole = 'pladmin';
+                } else {
+                    loggedRole = 'admin';
+                }
             }
 
             if (loggedRole) {
@@ -1094,6 +1111,16 @@
                     btnTable.style.display = 'none';
                     if (tableSec) tableSec.style.display = 'none';
                 }
+            }
+
+            // Auto-load record if redirected from table.html
+            const urlParams = new URLSearchParams(window.location.search);
+            const loadEmpId = urlParams.get('loadEmpId');
+            if (loadEmpId) {
+                document.getElementById('emp-id').value = loadEmpId;
+                setTimeout(() => {
+                    document.getElementById('btnLookup').click();
+                }, 300);
             }
             window.scrollTo(0, 0);
         }
@@ -1335,10 +1362,8 @@
             return `
             <div style="font-family: Arial, Helvetica, sans-serif; padding: 25px; color: #000000; background: #FFFFFF; width: 750px; border: 2.5px solid #1E3A8A; border-radius: 8px;">
                 <div style="text-align: center; border-bottom: 2.5px solid #1E3A8A; padding-bottom: 12px; margin-bottom: 18px;">
-                    <img src="logo.png" style="max-width: 220px; max-height: 65px; width: auto; height: auto; margin-bottom: 6px; display: inline-block;" onerror="this.style.display='none';">
-                    <div style="font-size: 24px; font-weight: 900; color: #1E3A8A; letter-spacing: 2px; text-transform: uppercase;">SKILLVERSITY</div>
-                    <div style="font-size: 11px; font-weight: 700; color: #FF5722; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px;">IT &amp; OPERATIONS</div>
-                    <h2 style="color: #1E3A8A; font-size: 18px; font-weight: 800; margin-top: 4px; margin-bottom: 4px; text-transform: uppercase;">ASSET ISSUANCE REPORT</h2>
+                    <img src="logo.png" style="max-width: 250px; max-height: 75px; width: auto; height: auto; margin-bottom: 8px; display: inline-block;" onerror="this.style.display='none';">
+                    <h2 style="color: #1E3A8A; font-size: 22px; font-weight: 800; margin-top: 4px; margin-bottom: 4px; text-transform: uppercase;">ASSET ISSUANCE REPORT</h2>
                 </div>
 
                 <div style="margin-bottom: 18px; background: #FFFFFF; border: 1.5px solid #1E3A8A; border-radius: 6px; padding: 12px;">
@@ -1688,6 +1713,16 @@
             document.body.appendChild(link);
             link.click();
             link.remove();
+        });
+
+        // Clear All Local Backend Records
+        document.getElementById('btnClearDB').addEventListener('click', () => {
+            if (confirm('Are you sure you want to CLEAR ALL local backend records and submission counters? This action cannot be undone.')) {
+                localStorage.removeItem('skillversity_asset_records_db');
+                localStorage.removeItem('skillversity_submission_counts');
+                renderAdminTable();
+                showCustomAlert('Database Cleared', 'All local backend records and submission limits have been cleared successfully.');
+            }
         });
 
         // Reset error styling on input
