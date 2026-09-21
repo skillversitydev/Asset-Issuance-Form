@@ -698,7 +698,6 @@
                             <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Employee Name</th>
                             <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Email</th>
                             <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Department</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Received Date</th>
                             <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Assets Issued</th>
                             <th style="padding: 8px 10px; border: 1px solid #CBD5E1; text-align: center;">Actions</th>
                         </tr>
@@ -719,6 +718,9 @@
             <h1 class="form-main-title">ASSET ISSUANCE FORM</h1>
             <p class="form-sub-title">Asset Allocation &amp; Tracking</p>
         </header>
+
+        <!-- Mode Banner Notification (View Only vs Admin Edit) -->
+        <div id="modeBanner" style="display: none; margin-bottom: 1.5rem;"></div>
 
         <!-- Form Layout -->
         <form id="issuanceForm" class="form-layout" novalidate>
@@ -751,13 +753,15 @@
                 <!-- 4. Employee ID -->
                 <div class="field-group">
                     <label for="emp-id">Employee ID <span class="req">*</span></label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="emp-id" name="emp-id" placeholder="QLI0001" class="uppercase" required style="flex: 1;">
-                        <button type="button" id="btnLookup" title="Load existing record from Google Sheet" style="background: #1E3A8A; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">🔍 LOAD RECORD</button>
-                    </div>
+                    <input type="text" id="emp-id" name="emp-id" placeholder="QLI0001" class="uppercase" required>
                 </div>
 
-                <!-- 2nd Asset Issuance Date & 3rd Asset Issuance Date -->
+                <!-- Asset Issuance Date, 2nd Asset Issuance Date & 3rd Asset Issuance Date -->
+                <div class="field-group">
+                    <label for="date">Asset Issuance Date <span class="hint">(If applicable)</span></label>
+                    <input type="date" id="date" name="date">
+                </div>
+
                 <div class="grid-2">
                     <div class="field-group">
                         <label for="date-2">2nd Asset Issuance Date <span class="hint">(If applicable)</span></label>
@@ -995,8 +999,7 @@
     <!-- Offscreen Printable Voucher Element -->
     <div id="voucherContainer"></div>
 
-
-
+    <script>
         // Configurable Google Sheet Webhook URL (Silent Background Sync)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw_fCsHoKnwRLaoEqeMcsFFivg0mwazA1ji6l7Cvf5FkdB2Z2GoV0By4aL0oUaoyuOmA/exec";
 
@@ -1005,65 +1008,20 @@
         const empEmailInput = document.getElementById('emp-email');
         if (mainCard) mainCard.style.display = 'block';
 
-        // Auto-load record if redirected from table.html or admin.html
+        // Auto-load record if redirected from admin.html
         const urlParams = new URLSearchParams(window.location.search);
         const loadEmpId = urlParams.get('loadEmpId');
         if (loadEmpId) {
             const empIdInput = document.getElementById('emp-id');
             if (empIdInput) empIdInput.value = loadEmpId;
             setTimeout(() => {
-                const btnLookup = document.getElementById('btnLookup');
-                if (btnLookup) btnLookup.click();
+                fetchRecordForEmpId(loadEmpId);
             }, 300);
         }
 
-
-
-        // Robust Date Formatter for HTML5 <input type="date"> (Converts DD/MM/YYYY, ISO, etc. to YYYY-MM-DD)
-        function formatDateForInput(dateVal) {
-            if (!dateVal || dateVal === 'NIL' || dateVal === 'N/A') return '';
-            const str = String(dateVal).trim();
-
-            // Already YYYY-MM-DD
-            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
-
-            // Try parsing Date object
-            const d = new Date(str);
-            if (!isNaN(d.getTime())) {
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            // Fallback for DD/MM/YYYY or DD-MM-YYYY
-            const parts = str.split(/[\/\-\.]/);
-            if (parts.length === 3) {
-                if (parts[2].length === 4) { // DD/MM/YYYY
-                    const day = parts[0].padStart(2, '0');
-                    const month = parts[1].padStart(2, '0');
-                    const year = parts[2];
-                    return `${year}-${month}-${day}`;
-                }
-            }
-            return '';
-        }
-
-        // 🔍 LOAD EXISTING RECORD FROM GOOGLE SHEET (100% CORS-Proof JSONP)
-        document.getElementById('btnLookup').addEventListener('click', function() {
-            const empIdInput = document.getElementById('emp-id');
-            const empEmailInput = document.getElementById('emp-email');
-            const query = (empIdInput.value || empEmailInput.value || '').trim();
-
-            if (!query) {
-                showCustomAlert('Lookup Search', 'Please enter an Employee ID or Email ID to search existing records.');
-                return;
-            }
-
-            const btn = this;
-            const originalText = btn.textContent;
-            btn.disabled = true;
-            btn.textContent = '⏳ SEARCHING...';
+        // 🔍 Fetch Existing Record Engine
+        function fetchRecordForEmpId(query) {
+            if (!query) return;
 
             const callbackName = 'googleLookupCB_' + Date.now();
             let timer = null;
@@ -1073,82 +1031,18 @@
                 delete window[callbackName];
                 const scriptTag = document.getElementById(callbackName);
                 if (scriptTag) scriptTag.remove();
-                btn.disabled = false;
-                btn.textContent = originalText;
 
                 if (res && res.found && res.record) {
                     const r = res.record;
-
-                    // Fill Employee Details & Issuance Dates
-                    if (r.employeeName) document.getElementById('emp-name').value = r.employeeName;
-                    if (r.employeeEmail) document.getElementById('emp-email').value = r.employeeEmail;
-                    if (r.employeeId) document.getElementById('emp-id').value = r.employeeId;
-                    if (r.department) document.getElementById('department').value = r.department;
-                    if (r.issuedBy) document.getElementById('issued-by').value = r.issuedBy;
-
-                    const joiningVal = formatDateForInput(r.joiningDate);
-                    if (joiningVal) document.getElementById('joining-date').value = joiningVal;
-
-                    const dateVal = formatDateForInput(r.date || r.receivedDate);
-                    if (dateVal) document.getElementById('date').value = dateVal;
-
-                    const date2Val = formatDateForInput(r.date2);
-                    if (date2Val) {
-                        document.getElementById('date-2').value = date2Val;
-                    } else {
-                        document.getElementById('date-2').valueAsDate = new Date();
-                    }
-
-                    const date3Val = formatDateForInput(r.date3);
-                    if (date3Val) {
-                        document.getElementById('date-3').value = date3Val;
-                    } else if (date2Val) {
-                        document.getElementById('date-3').valueAsDate = new Date();
-                    }
-
-                    // Fill Hardware Specs
-                    if (r.laptopBrand) document.getElementById('laptop-brand').value = r.laptopBrand;
-                    if (r.laptopSerial) document.getElementById('laptop-serial').value = r.laptopSerial;
-                    if (r.laptopChargerSerial) document.getElementById('laptop-charger-serial').value = r.laptopChargerSerial;
-                    if (r.headphoneBrand) document.getElementById('headphone-brand').value = r.headphoneBrand;
-                    if (r.headphoneSerial) document.getElementById('headphone-serial').value = r.headphoneSerial;
-                    if (r.mouseType) document.getElementById('mouse-type').value = r.mouseType;
-                    if (r.mouseSerial) document.getElementById('mouse-serial').value = r.mouseSerial;
-                    if (r.keyboardType) document.getElementById('keyboard-type').value = r.keyboardType;
-                    if (r.keyboardSerial) document.getElementById('keyboard-serial').value = r.keyboardSerial;
-                    if (r.mobileBrand) document.getElementById('mobile-brand').value = r.mobileBrand;
-                    if (r.simNumber) document.getElementById('sim-number').value = r.simNumber;
-                    if (r.mobileSerial) document.getElementById('mobile-serial').value = r.mobileSerial;
-                    if (r.mobileImei) document.getElementById('mobile-imei').value = r.mobileImei;
-                    if (r.mobileChargerSerial) document.getElementById('mobile-charger-serial').value = r.mobileChargerSerial;
-                    if (r.tabBrand) document.getElementById('tab-brand').value = r.tabBrand;
-                    if (r.tabSerial) document.getElementById('tab-serial').value = r.tabSerial;
-                    if (r.storageCapacity) document.getElementById('storage-capacity').value = r.storageCapacity;
-                    if (r.storageSerial) document.getElementById('storage-serial').value = r.storageSerial;
-                    if (r.remarks && r.remarks !== 'N/A') document.getElementById('remarks').value = r.remarks;
-
-                    // Auto-check previously selected assets & storage devices
-                    if (r.assetsIssued) {
-                        const issuedList = r.assetsIssued.split(',').map(s => s.trim().toUpperCase());
-                        document.querySelectorAll('input[name="assets"]').forEach(cb => {
-                            if (issuedList.includes(cb.value.toUpperCase())) {
-                                cb.checked = true;
-                            }
-                        });
-                    }
-                    if (r.storageDevice) {
-                        const storageList = r.storageDevice.split(',').map(s => s.trim().toUpperCase());
-                        document.querySelectorAll('input[name="storage-device"]').forEach(cb => {
-                            if (storageList.includes(cb.value.toUpperCase())) {
-                                cb.checked = true;
-                            }
-                        });
-                        updateStorageFields();
-                    }
-
-                    showCustomAlert('Record Loaded Successfully', 'Existing record for ' + (r.employeeName || query) + ' loaded! You can now check newly issued assets and re-submit.');
+                    populateRecordIntoForm(r);
+                    applyFormViewMode(r);
                 } else {
-                    showCustomAlert('Record Not Found', 'No existing record found for ID: ' + query + '. You can proceed to fill out a new form.');
+                    let localDB = JSON.parse(localStorage.getItem('skillversity_asset_records_db') || '[]');
+                    let localRec = localDB.find(r => r.employeeId && r.employeeId.toUpperCase() === query.toUpperCase());
+                    if (localRec) {
+                        populateRecordIntoForm(localRec);
+                        applyFormViewMode(localRec);
+                    }
                 }
             };
 
@@ -1156,9 +1050,6 @@
                 delete window[callbackName];
                 const scriptTag = document.getElementById(callbackName);
                 if (scriptTag) scriptTag.remove();
-                btn.disabled = false;
-                btn.textContent = originalText;
-                showCustomAlert('Lookup Search', 'No existing record found or search timed out for ID: ' + query + '.');
             }, 6000);
 
             const scriptTag = document.createElement('script');
@@ -1168,11 +1059,146 @@
                 clearTimeout(timer);
                 delete window[callbackName];
                 scriptTag.remove();
-                btn.disabled = false;
-                btn.textContent = originalText;
-                showCustomAlert('Lookup Search', 'No existing record found for ID: ' + query + '.');
             };
             document.body.appendChild(scriptTag);
+        }
+
+        // 📝 Populate Form Fields Function
+        function populateRecordIntoForm(r) {
+            if (r.employeeName) document.getElementById('emp-name').value = r.employeeName;
+            if (r.employeeEmail) document.getElementById('emp-email').value = r.employeeEmail;
+            if (r.employeeId) document.getElementById('emp-id').value = r.employeeId;
+            if (r.department) document.getElementById('department').value = r.department;
+            if (r.issuedBy) document.getElementById('issued-by').value = r.issuedBy;
+
+            const joiningVal = formatDateForInput(r.joiningDate);
+            if (joiningVal) document.getElementById('joining-date').value = joiningVal;
+
+            const dateVal = formatDateForInput(r.date || r.receivedDate);
+            if (dateVal) document.getElementById('date').value = dateVal;
+
+            const date2Val = formatDateForInput(r.date2);
+            if (date2Val) {
+                document.getElementById('date-2').value = date2Val;
+            } else {
+                document.getElementById('date-2').valueAsDate = new Date();
+            }
+
+            const date3Val = formatDateForInput(r.date3);
+            if (date3Val) {
+                document.getElementById('date-3').value = date3Val;
+            } else if (date2Val) {
+                document.getElementById('date-3').valueAsDate = new Date();
+            }
+
+            // Fill Hardware Specs
+            if (r.laptopBrand) document.getElementById('laptop-brand').value = r.laptopBrand;
+            if (r.laptopSerial) document.getElementById('laptop-serial').value = r.laptopSerial;
+            if (r.laptopChargerSerial) document.getElementById('laptop-charger-serial').value = r.laptopChargerSerial;
+            if (r.headphoneBrand) document.getElementById('headphone-brand').value = r.headphoneBrand;
+            if (r.headphoneSerial) document.getElementById('headphone-serial').value = r.headphoneSerial;
+            if (r.mouseType) document.getElementById('mouse-type').value = r.mouseType;
+            if (r.mouseSerial) document.getElementById('mouse-serial').value = r.mouseSerial;
+            if (r.keyboardType) document.getElementById('keyboard-type').value = r.keyboardType;
+            if (r.keyboardSerial) document.getElementById('keyboard-serial').value = r.keyboardSerial;
+            if (r.mobileBrand) document.getElementById('mobile-brand').value = r.mobileBrand;
+            if (r.simNumber) document.getElementById('sim-number').value = r.simNumber;
+            if (r.mobileSerial) document.getElementById('mobile-serial').value = r.mobileSerial;
+            if (r.mobileImei) document.getElementById('mobile-imei').value = r.mobileImei;
+            if (r.mobileChargerSerial) document.getElementById('mobile-charger-serial').value = r.mobileChargerSerial;
+            if (r.tabBrand) document.getElementById('tab-brand').value = r.tabBrand;
+            if (r.tabSerial) document.getElementById('tab-serial').value = r.tabSerial;
+            if (r.storageCapacity) document.getElementById('storage-capacity').value = r.storageCapacity;
+            if (r.storageSerial) document.getElementById('storage-serial').value = r.storageSerial;
+            if (r.remarks && r.remarks !== 'N/A') document.getElementById('remarks').value = r.remarks;
+
+            // Auto-check previously selected assets & storage devices
+            if (r.assetsIssued) {
+                const issuedList = r.assetsIssued.split(',').map(s => s.trim().toUpperCase());
+                checkboxes.forEach(cb => {
+                    if (issuedList.includes(cb.value.toUpperCase())) {
+                        cb.checked = true;
+                    }
+                });
+                toggleAssetSections();
+            }
+            if (r.storageDevice) {
+                const storageList = r.storageDevice.split(',').map(s => s.trim().toUpperCase());
+                document.querySelectorAll('input[name="storage-device"]').forEach(cb => {
+                    if (storageList.includes(cb.value.toUpperCase())) {
+                        cb.checked = true;
+                    }
+                });
+                updateStorageFields();
+            }
+        }
+
+        // 👁️ Check View Only vs Admin Edit Mode
+        function applyFormViewMode(r) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdminEdit = urlParams.get('adminEdit') === 'true' || sessionStorage.getItem('skillversity_logged_admin') !== null;
+            
+            if (!isAdminEdit) {
+                setFormReadOnly(true);
+                showCustomAlert('Record Loaded (View Only)', 'Existing record for ' + (r.employeeName || 'Employee') + ' loaded in View Only mode. To edit this record, please log in via the ADMIN PORTAL.');
+            } else {
+                setFormReadOnly(false, true);
+                showCustomAlert('Admin Edit Mode Active', 'Existing record for ' + (r.employeeName || 'Employee') + ' loaded! Admin editing enabled.');
+            }
+        }
+
+        // 🔒 Lock / Unlock Form Controls Function
+        function setFormReadOnly(isReadOnly, isAdminMode = false) {
+            const form = document.getElementById('issuanceForm');
+            const modeBanner = document.getElementById('modeBanner');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnResetForm = document.getElementById('btnResetForm');
+
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.id === 'emp-id' || input.id === 'tableSearchInput') return;
+                input.disabled = isReadOnly;
+            });
+
+            if (isReadOnly) {
+                if (modeBanner) {
+                    modeBanner.style.display = 'block';
+                    modeBanner.innerHTML = `<div style="background:#FEF3C7; border:1.5px solid #F59E0B; color:#92400E; padding:0.9rem 1.25rem; border-radius:12px; font-weight:700; font-size:0.9rem; text-align:center; box-shadow:0 4px 12px rgba(245,158,11,0.15);">👁️ VIEW-ONLY MODE: Existing record loaded for review. Editing is strictly permitted through the <a href="admin.html" style="color:#B45309; text-decoration:underline; font-weight:800;">ADMIN PORTAL</a>.</div>`;
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '🔒 VIEW ONLY MODE (EDITING RESERVED FOR ADMIN PORTAL)';
+                    submitBtn.style.background = '#64748B';
+                }
+                if (btnResetForm) {
+                    btnResetForm.style.display = 'inline-block';
+                }
+            } else {
+                if (isAdminMode && modeBanner) {
+                    modeBanner.style.display = 'block';
+                    modeBanner.innerHTML = `<div style="background:#ECFDF5; border:1.5px solid #10B981; color:#065F46; padding:0.9rem 1.25rem; border-radius:12px; font-weight:700; font-size:0.9rem; text-align:center; box-shadow:0 4px 12px rgba(16,185,129,0.15);">✏️ ADMIN EDIT MODE: Authorized Admin Editing Mode Active.</div>`;
+                } else if (modeBanner) {
+                    modeBanner.style.display = 'none';
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
+                    submitBtn.style.background = 'linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%)';
+                }
+                if (btnResetForm) {
+                    btnResetForm.style.display = 'none';
+                }
+            }
+        }
+
+        // 🔄 Reset / Clear Form Event Listener
+        document.getElementById('btnResetForm')?.addEventListener('click', function() {
+            const form = document.getElementById('issuanceForm');
+            form.reset();
+            checkboxes.forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="storage-device"]').forEach(cb => cb.checked = false);
+            toggleAssetSections();
+            setFormReadOnly(false, false);
         });
 
         // Dynamic Storage Fields Generator
@@ -1552,7 +1578,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="padding: 1.5rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found in local database. Submit a form to populate records!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found in local database. Submit a form to populate records!</td></tr>`;
                 return;
             }
 
@@ -1564,24 +1590,15 @@
                         <td style="padding: 8px 10px; font-weight: 700;">${r.employeeName || 'N/A'}</td>
                         <td style="padding: 8px 10px; color: #2563EB;">${r.employeeEmail || 'N/A'}</td>
                         <td style="padding: 8px 10px;">${r.department || 'N/A'}</td>
-                        <td style="padding: 8px 10px;">${r.date || 'N/A'}</td>
                         <td style="padding: 8px 10px; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${r.assetsIssued}">${r.assetsIssued || 'None'}</td>
                         <td style="padding: 8px 10px; text-align: center; white-space: nowrap;">
-                            <button type="button" onclick="loadRecordIntoForm('${r.employeeId}')" style="background: #1E3A8A; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; margin-right: 4px;">📝 LOAD</button>
-                            <button type="button" onclick="deleteLocalRecord('${r.employeeId}')" style="background: #EF4444; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🗑️</button>
+                            <button type="button" onclick="deleteLocalRecord('${r.employeeId}')" style="background: #EF4444; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🗑️ DELETE</button>
                         </td>
                     </tr>
                 `;
             });
             tbody.innerHTML = rowsHtml;
         }
-
-        window.loadRecordIntoForm = function(empId) {
-            document.getElementById('emp-id').value = empId;
-            document.getElementById('btnLookup').click();
-            document.getElementById('adminTableSection').style.display = 'none';
-            document.getElementById('issuanceForm').scrollIntoView({ behavior: 'smooth' });
-        };
 
         window.deleteLocalRecord = function(empId) {
             if (confirm('Are you sure you want to delete local record for Employee ID: ' + empId + '?')) {
