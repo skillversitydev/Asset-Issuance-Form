@@ -3,39 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity - Power Admin Portal</title>
+    <title>Skillversity - Vercel Admin Portal</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="index.css">
 </head>
 <body style="background: #F1F5F9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; padding: 1.5rem; color: #0F172A; box-sizing: border-box;">
 
-    <!-- 1. ADMIN LOGIN PORTAL (EXCLUSIVE PLADMIN ACCESS) -->
+    <!-- 1. ADMIN LOGIN PORTAL SECTION -->
     <div id="adminLoginCard" class="login-card" style="max-width: 440px; margin: 3rem auto; background: #FFFFFF; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px solid #CBD5E1;">
         <div class="login-header" style="text-align: center; margin-bottom: 1.5rem;">
             <img src="logo.png" alt="Skillversity Logo" style="max-height: 55px; width: auto; margin-bottom: 0.5rem;" onerror="this.style.display='none';">
-            <h2 style="color: #1E3A8A; font-size: 1.4rem; font-weight: 800; margin: 0;">POWER ADMIN PORTAL</h2>
-            <p style="color: #64748B; font-size: 0.85rem; margin-top: 0.2rem;">Exclusive Power Level Admin (pladmin) Portal Access</p>
+            <h2 style="color: #1E3A8A; font-size: 1.4rem; font-weight: 800; margin: 0;">ADMIN PORTAL</h2>
+            <p style="color: #64748B; font-size: 0.85rem; margin-top: 0.2rem;">Skillversity Admin Portal Access</p>
         </div>
 
         <form id="adminLoginForm" class="login-form">
             <div class="field-group" style="margin-bottom: 1rem;">
-                <label for="admin-user" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Power Admin Username <span style="color:#EF4444">*</span></label>
-                <input type="text" id="admin-user" placeholder="Enter Power Admin Username (pladmin)" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
+                <label for="admin-user" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Admin Username <span style="color:#EF4444">*</span></label>
+                <input type="text" id="admin-user" placeholder="Enter Admin Username" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
             </div>
 
             <div class="field-group" style="margin-bottom: 1.5rem;">
-                <label for="admin-pass" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Power Admin Password <span style="color:#EF4444">*</span></label>
+                <label for="admin-pass" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem;">Admin Password <span style="color:#EF4444">*</span></label>
                 <input type="password" id="admin-pass" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; box-sizing: border-box;" required>
                 <div id="adminLoginError" style="display:none; color: #EF4444; font-size: 0.82rem; font-weight: 700; margin-top: 0.4rem;">⚠️ Incorrect Username or Password! Please enter correct Username and Password</div>
             </div>
 
-            <button type="submit" style="width: 100%; background: #1E3A8A; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;">LOGIN AS POWER ADMIN</button>
+            <button type="submit" style="width: 100%; background: #1E3A8A; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease;">LOGIN AS ADMIN</button>
         </form>
 
-        <p style="text-align: center; margin-top: 1.2rem; font-size: 0.8rem; color: #94A3B8;">🔒 Skillversity Exclusive Power Admin Access</p>
+        <p style="text-align: center; margin-top: 1.2rem; font-size: 0.8rem; color: #94A3B8;">🔒 Skillversity Exclusive Admin Access</p>
     </div>
 
-    <!-- 2. ADMIN RECORDS TABLE DASHBOARD -->
+    <!-- 2. VERCEL ADMIN RECORDS TABLE DASHBOARD -->
     <div id="adminPortalContent" style="display: none; max-width: 1240px; margin: 0 auto; background: #FFFFFF; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 2px solid #CBD5E1;">
         
         <!-- Header & Nav -->
@@ -44,7 +44,7 @@
                 <img src="logo.png" alt="Skillversity Logo" style="max-height: 50px; width: auto;" onerror="this.style.display='none';">
                 <div>
                     <h1 style="color: #1E3A8A; font-size: 1.5rem; font-weight: 800; margin: 0;">⚡ ADMIN RECORDS DATABASE</h1>
-                    <p style="color: #64748B; font-size: 0.85rem; margin: 0;">Logged in as: <span id="loggedUserDisplay" style="color: #2563EB; font-weight: 700;">pladmin (Power Admin)</span></p>
+                    <p style="color: #64748B; font-size: 0.85rem; margin: 0;">Logged in as: <span id="loggedUserDisplay" style="color: #2563EB; font-weight: 700;">Admin</span></p>
                 </div>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -83,7 +83,6 @@
                         <th style="padding: 10px 12px; border: 1px solid #CBD5E1;">Employee Name</th>
                         <th style="padding: 10px 12px; border: 1px solid #CBD5E1;">Email</th>
                         <th style="padding: 10px 12px; border: 1px solid #CBD5E1;">Department</th>
-                        <th style="padding: 10px 12px; border: 1px solid #CBD5E1;">Received Date</th>
                         <th style="padding: 10px 12px; border: 1px solid #CBD5E1;">Assets Issued</th>
                         <th style="padding: 10px 12px; border: 1px solid #CBD5E1; text-align: center;">Actions</th>
                     </tr>
@@ -96,7 +95,7 @@
 
         <!-- Footer -->
         <div style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: #64748B;">
-            Skillversity Admin Database Portal &bull; IT &amp; Operations
+            Skillversity Vercel Admin Database Portal &bull; IT &amp; Operations
         </div>
     </div>
 
@@ -109,7 +108,7 @@
         const adminLoginError = document.getElementById('adminLoginError');
         const loggedUserDisplay = document.getElementById('loggedUserDisplay');
 
-        // Check active session (ONLY pladmin allowed)
+        // Check active Vercel session (ONLY pladmin allowed)
         const activeSession = sessionStorage.getItem('skillversity_logged_admin');
         if (activeSession === 'pladmin') {
             showPortal('pladmin');
@@ -128,7 +127,7 @@
                 sessionStorage.setItem('skillversity_logged_admin', 'pladmin');
                 showPortal('pladmin');
             } else if (!isPladminUser && (username === 'admin' || username === 'admin@skillversity.org')) {
-                adminLoginError.textContent = '❌ Access Denied: Only Power Admin (pladmin) is authorized to log into the Admin Portal.';
+                adminLoginError.textContent = '❌ Access Denied: Only authorized Administrators can log into the Admin Portal.';
                 adminLoginError.style.display = 'block';
             } else {
                 adminLoginError.textContent = '⚠️ Incorrect Username or Password! Please enter correct Username and Password';
@@ -139,7 +138,7 @@
         function showPortal(role) {
             adminLoginCard.style.display = 'none';
             adminPortalContent.style.display = 'block';
-            loggedUserDisplay.textContent = 'pladmin (Power Admin)';
+            loggedUserDisplay.textContent = 'Admin';
             renderTable();
         }
 
@@ -242,7 +241,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="padding: 2rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found. Click "🔄 SYNC WITH SHEET" above to fetch all records directly from Google Sheets!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 2rem; text-align: center; color: #64748B; font-weight: 600;">No asset records found. Click "🔄 SYNC WITH SHEET" above to fetch all records directly from Google Sheets!</td></tr>`;
                 return;
             }
 
@@ -254,7 +253,6 @@
                         <td style="padding: 10px 12px; font-weight: 700;">${r.employeeName || 'N/A'}</td>
                         <td style="padding: 10px 12px; color: #2563EB;">${r.employeeEmail || 'N/A'}</td>
                         <td style="padding: 10px 12px;">${r.department || 'N/A'}</td>
-                        <td style="padding: 10px 12px;">${r.date || 'N/A'}</td>
                         <td style="padding: 10px 12px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${r.assetsIssued}">${r.assetsIssued || 'None'}</td>
                         <td style="padding: 10px 12px; text-align: center; white-space: nowrap;">
                             <button type="button" onclick="loadRecord('${r.employeeId}')" style="background: #1E3A8A; color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-right: 6px;">📝 EDIT IN FORM</button>
