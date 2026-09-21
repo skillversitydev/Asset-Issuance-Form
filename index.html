@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity | Asset Issuance Form</title>
-    <meta name="description" content="Skillversity internal employee asset issuance form portal.">
+    <title>Skillversity | Employee Portal Login</title>
+    <meta name="description" content="Skillversity internal employee asset issuance form and login portal.">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png?v=2">
@@ -54,9 +54,85 @@
             padding: 2rem 1rem;
         }
 
-        /* MAIN APP CARD */
+        /* LOGIN PORTAL CARD */
+        .login-card {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.15);
+            padding: 2.5rem;
+            border: 1px solid #E2E8F0;
+            animation: fadeInScale 0.35s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            max-width: 260px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1.25rem;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1E3A8A;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 87, 34, 0.35);
+        }
+
+        .login-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94A3B8;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        /* MAIN APP CARD (Hidden initially) */
         .main-card {
-            display: block;
+            display: none;
             background: var(--bg-card);
             width: 100%;
             max-width: 840px;
@@ -69,7 +145,7 @@
             margin: 2rem 0;
         }
 
-        /* User Header Bar */
+        /* User Header Bar when logged in */
         .user-nav-bar {
             display: flex;
             justify-content: space-between;
@@ -88,6 +164,23 @@
             align-items: center;
             gap: 0.5rem;
             font-weight: 700;
+        }
+
+        .logout-btn {
+            background: #FFFFFF;
+            color: var(--danger);
+            border: 1px solid #FCA5A5;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
         }
 
         /* Header & Logo Sizing */
@@ -489,6 +582,11 @@
             to { opacity: 1; }
         }
 
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         @keyframes popUp {
             from { opacity: 0; transform: scale(0.85); }
             to { opacity: 1; transform: scale(1); }
@@ -508,6 +606,9 @@
         @media (max-width: 640px) {
             body { 
                 padding: 0.75rem 0.5rem; 
+            }
+            .login-card {
+                padding: 1.75rem 1.25rem;
             }
             .main-card { 
                 padding: 1.25rem 1rem; 
@@ -565,9 +666,49 @@
                 <span>⚡ Skillversity Asset Issuance Portal</span>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-                <a href="admin.html" style="background: #1E3A8A; color: white; text-decoration: none; padding: 0.55rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">🔑 VERCEL ADMIN PORTAL</a>
+                <a href="admin.html" style="background: #1E3A8A; color: white; text-decoration: none; padding: 0.55rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">🔑 ADMIN LOGIN</a>
             </div>
         </div>
+
+        <!-- LOCAL ADMIN DATABASE TABLE DASHBOARD -->
+        <section id="adminTableSection" class="section-box" style="display: none; margin-bottom: 2rem; border-left-color: #1E3A8A; background: #F8FAFC;">
+            <div class="section-header" style="flex-wrap: wrap; gap: 0.5rem;">
+                <div>
+                    <h2 class="section-title">📊 Local Admin Records Database</h2>
+                    <span class="hint" style="font-size: 0.8rem;">View, filter search, load, and export local asset issuance records</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">📥 EXPORT CSV</button>
+                    <button type="button" id="btnClearDB" style="background: #EF4444; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">🗑️ CLEAR ALL</button>
+                    <button type="button" id="btnCloseTable" style="background: #64748B; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">✖ CLOSE</button>
+                </div>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="field-group" style="margin-bottom: 1rem;">
+                <input type="text" id="tableSearchInput" placeholder="🔍 Search records by Employee ID, Name, Email, Department, Asset..." style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.9rem;">
+            </div>
+
+            <!-- Responsive Table Container -->
+            <div style="overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1.5px solid #CBD5E1; border-radius: 8px; background: #FFFFFF;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                    <thead>
+                        <tr style="background: #1E3A8A; color: white; position: sticky; top: 0; z-index: 10; font-weight: 700;">
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Emp ID</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Employee Name</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Email</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Department</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Received Date</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Assets Issued</th>
+                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <!-- Header & Logo -->
         <header class="brand-header">
@@ -616,21 +757,16 @@
                     </div>
                 </div>
 
-                <!-- Asset Received Date, 2nd Asset Issuance Date & 3rd Asset Issuance Date -->
+                <!-- 2nd Asset Issuance Date & 3rd Asset Issuance Date -->
                 <div class="grid-2">
-                    <div class="field-group">
-                        <label for="date">Asset Received Date <span class="req">*</span></label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
                     <div class="field-group">
                         <label for="date-2">2nd Asset Issuance Date <span class="hint">(If applicable)</span></label>
                         <input type="date" id="date-2" name="date-2">
                     </div>
-                </div>
-
-                <div class="field-group">
-                    <label for="date-3">3rd Asset Issuance Date <span class="hint">(If applicable)</span></label>
-                    <input type="date" id="date-3" name="date-3">
+                    <div class="field-group">
+                        <label for="date-3">3rd Asset Issuance Date <span class="hint">(If applicable)</span></label>
+                        <input type="date" id="date-3" name="date-3">
+                    </div>
                 </div>
 
                 <!-- Department & Asset Issued By -->
@@ -859,9 +995,7 @@
     <!-- Offscreen Printable Voucher Element -->
     <div id="voucherContainer"></div>
 
-    <script>
-        // Set today's date
-        document.getElementById('date').valueAsDate = new Date();
+
 
         // Configurable Google Sheet Webhook URL (Silent Background Sync)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw_fCsHoKnwRLaoEqeMcsFFivg0mwazA1ji6l7Cvf5FkdB2Z2GoV0By4aL0oUaoyuOmA/exec";
@@ -882,6 +1016,8 @@
                 if (btnLookup) btnLookup.click();
             }, 300);
         }
+
+
 
         // Robust Date Formatter for HTML5 <input type="date"> (Converts DD/MM/YYYY, ISO, etc. to YYYY-MM-DD)
         function formatDateForInput(dateVal) {
@@ -1393,6 +1529,8 @@
             setTimeout(() => {
                 btn.disabled = false;
                 btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
+                // Clear Admin session & automatically logout to Admin Login screen
+                sessionStorage.removeItem('skillversity_logged_admin');
                 window.location.reload();
             }, 1200);
         });
