@@ -943,18 +943,7 @@
                 </div>
 
                 <!-- Dynamic Storage Specs Fields Container -->
-                <div id="storageSpecsContainer">
-                    <div class="grid-2">
-                        <div class="field-group">
-                            <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
-                            <input type="text" id="storage-capacity" name="storage-capacity" placeholder="e.g. 64GB / 1TB; NIL if none" required>
-                        </div>
-                        <div class="field-group">
-                            <label for="storage-serial">Storage Device Serial Number <span class="req">*</span></label>
-                            <input type="text" id="storage-serial" name="storage-serial" placeholder="If not assigned, write NIL" required>
-                        </div>
-                    </div>
-                </div>
+                <div id="storageSpecsContainer"></div>
 
                 <div class="field-group">
                     <label for="remarks">Remarks</label>
@@ -1203,24 +1192,31 @@
         });
 
         // Dynamic Storage Fields Generator
+        function handleStorageDeviceChange(e) {
+            const nilCb = document.querySelector('input[name="storage-device"][value="NIL"]');
+            const otherCbs = document.querySelectorAll('input[name="storage-device"]:not([value="NIL"])');
+
+            if (e && e.target) {
+                if (e.target.value.toUpperCase() === 'NIL' && e.target.checked) {
+                    otherCbs.forEach(cb => cb.checked = false);
+                } else if (e.target.value.toUpperCase() !== 'NIL' && e.target.checked && nilCb) {
+                    nilCb.checked = false;
+                }
+            }
+            updateStorageFields();
+        }
+
         function updateStorageFields() {
             const container = document.getElementById('storageSpecsContainer');
+            if (!container) return;
+
+            const nilCb = document.querySelector('input[name="storage-device"][value="NIL"]');
             const checkedBoxes = Array.from(document.querySelectorAll('input[name="storage-device"]:checked'))
                                       .map(cb => cb.value)
                                       .filter(val => val.toUpperCase() !== 'NIL');
 
-            if (checkedBoxes.length === 0) {
-                container.innerHTML = `
-                    <div class="grid-2">
-                        <div class="field-group">
-                            <label for="storage-capacity">Storage Capacity <span class="req">*</span></label>
-                            <input type="text" id="storage-capacity" name="storage-capacity" placeholder="e.g. 64GB / 1TB; NIL if none" required>
-                        </div>
-                        <div class="field-group">
-                            <label for="storage-serial">Storage Device Serial Number <span class="req">*</span></label>
-                            <input type="text" id="storage-serial" name="storage-serial" placeholder="If not assigned, write NIL" required>
-                        </div>
-                    </div>`;
+            if ((nilCb && nilCb.checked) || checkedBoxes.length === 0) {
+                container.innerHTML = '';
                 return;
             }
 
@@ -1245,7 +1241,7 @@
         }
 
         document.querySelectorAll('input[name="storage-device"]').forEach(cb => {
-            cb.addEventListener('change', updateStorageFields);
+            cb.addEventListener('change', handleStorageDeviceChange);
         });
 
         // Show Custom Modern Modal Alert
