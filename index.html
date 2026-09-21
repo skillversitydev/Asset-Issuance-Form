@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skillversity | Admin Portal Login</title>
-    <meta name="description" content="Skillversity internal employee asset issuance form and login portal.">
+    <title>Skillversity | Asset Issuance Form</title>
+    <meta name="description" content="Skillversity internal employee asset issuance form portal.">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png?v=2">
@@ -54,85 +54,9 @@
             padding: 2rem 1rem;
         }
 
-        /* LOGIN PORTAL CARD */
-        .login-card {
-            background: var(--bg-card);
-            width: 100%;
-            max-width: 450px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.15);
-            padding: 2.5rem;
-            border: 1px solid #E2E8F0;
-            animation: fadeInScale 0.35s ease;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .login-logo {
-            max-width: 260px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 1.25rem;
-        }
-
-        .login-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1E3A8A;
-            letter-spacing: 0.02em;
-            margin-bottom: 0.25rem;
-        }
-
-        .login-subtitle {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
-            color: #FFFFFF;
-            border: none;
-            padding: 1rem;
-            font-size: 1rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
-            text-transform: uppercase;
-            margin-top: 0.5rem;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 87, 34, 0.35);
-        }
-
-        .login-hint {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #94A3B8;
-            margin-top: 1rem;
-            line-height: 1.4;
-        }
-
-        /* MAIN APP CARD (Hidden initially) */
+        /* MAIN APP CARD */
         .main-card {
-            display: none;
+            display: block;
             background: var(--bg-card);
             width: 100%;
             max-width: 840px;
@@ -145,7 +69,7 @@
             margin: 2rem 0;
         }
 
-        /* User Header Bar when logged in */
+        /* User Header Bar */
         .user-nav-bar {
             display: flex;
             justify-content: space-between;
@@ -164,23 +88,6 @@
             align-items: center;
             gap: 0.5rem;
             font-weight: 700;
-        }
-
-        .logout-btn {
-            background: #FFFFFF;
-            color: var(--danger);
-            border: 1px solid #FCA5A5;
-            padding: 0.35rem 0.85rem;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
         }
 
         /* Header & Logo Sizing */
@@ -582,11 +489,6 @@
             to { opacity: 1; }
         }
 
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
         @keyframes popUp {
             from { opacity: 0; transform: scale(0.85); }
             to { opacity: 1; transform: scale(1); }
@@ -606,9 +508,6 @@
         @media (max-width: 640px) {
             body { 
                 padding: 0.75rem 0.5rem; 
-            }
-            .login-card {
-                padding: 1.75rem 1.25rem;
             }
             .main-card { 
                 padding: 1.25rem 1rem; 
@@ -657,86 +556,18 @@
 </head>
 <body>
 
-    <!-- 1. ADMIN LOGIN PORTAL SECTION -->
-    <div id="loginCard" class="login-card">
-        <div class="login-header">
-            <img src="logo.png" alt="Skillversity Logo" class="login-logo" onerror="this.style.display='none';">
-            <h2 class="login-title">ADMIN LOGIN</h2>
-            <p class="login-subtitle">HR Administrator Portal Access</p>
-        </div>
-
-        <form id="loginForm" class="login-form">
-            <div class="field-group">
-                <label for="login-email">Admin Username <span class="req">*</span></label>
-                <input type="text" id="login-email" placeholder="Enter Admin Username" required>
-            </div>
-
-            <div class="field-group">
-                <label for="login-password">Admin Password <span class="req">*</span></label>
-                <input type="password" id="login-password" placeholder="••••••••" required>
-                <div id="login-error" style="display:none; color: #EF4444; font-size: 0.85rem; font-weight: 700; margin-top: 0.4rem;">⚠️ Incorrect Username or Password! Please enter correct Username and Password</div>
-            </div>
-
-            <button type="submit" class="login-btn">LOGIN AS ADMIN</button>
-        </form>
-
-        <p class="login-hint">🔒 Skillversity HR Administrator Access</p>
-    </div>
-
-    <!-- 2. MAIN ASSET ISSUANCE FORM SECTION -->
-    <main id="mainCard" class="main-card">
+    <!-- MAIN ASSET ISSUANCE FORM SECTION (Direct Access - No Login Required) -->
+    <main id="mainCard" class="main-card" style="display: block;">
         
-        <!-- User Nav Bar / Admin Session Header -->
+        <!-- Top Nav Header -->
         <div class="user-nav-bar">
             <div class="user-nav-info">
-                <span>🛡️ Logged in as Admin:</span>
-                <span id="activeUserEmail" style="color: #2563EB;">admin@skillversity.org</span>
+                <span>⚡ Skillversity Asset Issuance Portal</span>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-                <button type="button" id="btnToggleTable" style="background: #1E3A8A; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">📊 VIEW RECORDS TABLE</button>
-                <button type="button" id="btnLogout" class="logout-btn">ADMIN LOGOUT</button>
+                <a href="admin.html" style="background: #1E3A8A; color: white; text-decoration: none; padding: 0.55rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center;">🔑 VERCEL ADMIN PORTAL</a>
             </div>
         </div>
-
-        <!-- LOCAL ADMIN DATABASE TABLE DASHBOARD -->
-        <section id="adminTableSection" class="section-box" style="display: none; margin-bottom: 2rem; border-left-color: #1E3A8A; background: #F8FAFC;">
-            <div class="section-header" style="flex-wrap: wrap; gap: 0.5rem;">
-                <div>
-                    <h2 class="section-title">📊 Local Admin Records Database</h2>
-                    <span class="hint" style="font-size: 0.8rem;">View, filter search, load, and export local asset issuance records</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button type="button" id="btnExportCSV" style="background: #10B981; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">📥 EXPORT CSV</button>
-                    <button type="button" id="btnClearDB" style="background: #EF4444; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease;">🗑️ CLEAR ALL</button>
-                    <button type="button" id="btnCloseTable" style="background: #64748B; color: white; border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">✖ CLOSE</button>
-                </div>
-            </div>
-
-            <!-- Search Filter -->
-            <div class="field-group" style="margin-bottom: 1rem;">
-                <input type="text" id="tableSearchInput" placeholder="🔍 Search records by Employee ID, Name, Email, Department, Asset..." style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1.5px solid #CBD5E1; font-size: 0.9rem;">
-            </div>
-
-            <!-- Responsive Table Container -->
-            <div style="overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1.5px solid #CBD5E1; border-radius: 8px; background: #FFFFFF;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
-                    <thead>
-                        <tr style="background: #1E3A8A; color: white; position: sticky; top: 0; z-index: 10; font-weight: 700;">
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Emp ID</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Employee Name</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Email</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Department</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Received Date</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1;">Assets Issued</th>
-                            <th style="padding: 8px 10px; border: 1px solid #CBD5E1; text-align: center;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody">
-                        <!-- Populated dynamically via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
 
         <!-- Header & Logo -->
         <header class="brand-header">
@@ -1035,111 +866,22 @@
         // Configurable Google Sheet Webhook URL (Silent Background Sync)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw_fCsHoKnwRLaoEqeMcsFFivg0mwazA1ji6l7Cvf5FkdB2Z2GoV0By4aL0oUaoyuOmA/exec";
 
-        // Login & Session Management
-        const loginCard = document.getElementById('loginCard');
+        // Direct Access Initialization
         const mainCard = document.getElementById('mainCard');
-        const loginForm = document.getElementById('loginForm');
-        const activeUserEmail = document.getElementById('activeUserEmail');
-        const btnLogout = document.getElementById('btnLogout');
         const empEmailInput = document.getElementById('emp-email');
+        if (mainCard) mainCard.style.display = 'block';
 
-        // Cryptographic SHA-256 Password Hashing Engine
-        async function hashPassword(str) {
-            const buffer = new TextEncoder().encode(str);
-            const digest = await crypto.subtle.digest('SHA-256', buffer);
-            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        // Auto-load record if redirected from table.html or admin.html
+        const urlParams = new URLSearchParams(window.location.search);
+        const loadEmpId = urlParams.get('loadEmpId');
+        if (loadEmpId) {
+            const empIdInput = document.getElementById('emp-id');
+            if (empIdInput) empIdInput.value = loadEmpId;
+            setTimeout(() => {
+                const btnLookup = document.getElementById('btnLookup');
+                if (btnLookup) btnLookup.click();
+            }, 300);
         }
-
-        // Secure Cryptographic SHA-256 Credential Map (Strict Separate Hashes)
-        const AUTH_CREDENTIAL_MAP = {
-            'admin': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // ONLY admin123
-            'admin@skillversity.org': '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
-            'pladmin': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00', // ONLY pladmin123
-            'pladmin@skillversity.org': 'fae93ff5ff04ea6efd55998f8286a117b960b73c4f74d6df1b8b8004f2913e00'
-        };
-
-        const STRICT_PASSWORD_MAP = {
-            'admin': 'admin123',
-            'admin@skillversity.org': 'admin123',
-            'pladmin': 'pladmin123',
-            'pladmin@skillversity.org': 'pladmin123'
-        };
-
-        // Check active Admin session on load
-        const sessionAdmin = sessionStorage.getItem('skillversity_logged_admin');
-        if (sessionAdmin) {
-            showMainPortal(sessionAdmin);
-        }
-
-        // Universal Strict Login Handler (Enforces Separate Passwords)
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const username = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value.trim();
-            const loginError = document.getElementById('login-error');
-
-            let isValid = (STRICT_PASSWORD_MAP[username] === password);
-
-            if (!isValid && window.crypto && window.crypto.subtle) {
-                try {
-                    const hashedInput = await hashPassword(password);
-                    const expectedHash = AUTH_CREDENTIAL_MAP[username];
-                    if (expectedHash && expectedHash === hashedInput) {
-                        isValid = true;
-                    }
-                } catch (err) {}
-            }
-
-            if (isValid) {
-                if (loginError) loginError.style.display = 'none';
-                const role = username.startsWith('pladmin') ? 'pladmin' : 'admin';
-                sessionStorage.setItem('skillversity_logged_admin', role);
-                showMainPortal(role);
-            } else {
-                if (loginError) loginError.style.display = 'block';
-                showCustomAlert('Access Denied', 'Incorrect Username or Password! Please enter correct Username and Password');
-            }
-        });
-
-        function showMainPortal(adminUser) {
-            loginCard.style.display = 'none';
-            mainCard.style.display = 'block';
-            
-            if (activeUserEmail) {
-                activeUserEmail.textContent = adminUser === 'pladmin' ? 'pladmin (Power Admin)' : 'admin';
-            }
-
-            // Only 'pladmin' can see the Database Records Table button!
-            const btnTable = document.getElementById('btnToggleTable');
-            const tableSec = document.getElementById('adminTableSection');
-            
-            if (btnTable) {
-                if (adminUser === 'pladmin') {
-                    btnTable.style.display = 'inline-block';
-                } else {
-                    btnTable.style.display = 'none';
-                    if (tableSec) tableSec.style.display = 'none';
-                }
-            }
-
-            // Auto-load record if redirected from table.html
-            const urlParams = new URLSearchParams(window.location.search);
-            const loadEmpId = urlParams.get('loadEmpId');
-            if (loadEmpId) {
-                document.getElementById('emp-id').value = loadEmpId;
-                setTimeout(() => {
-                    document.getElementById('btnLookup').click();
-                }, 300);
-            }
-            window.scrollTo(0, 0);
-        }
-
-        btnLogout.addEventListener('click', function() {
-            sessionStorage.removeItem('skillversity_logged_admin');
-            mainCard.style.display = 'none';
-            loginCard.style.display = 'block';
-            document.getElementById('login-password').value = '';
-        });
 
         // Robust Date Formatter for HTML5 <input type="date"> (Converts DD/MM/YYYY, ISO, etc. to YYYY-MM-DD)
         function formatDateForInput(dateVal) {
@@ -1651,8 +1393,6 @@
             setTimeout(() => {
                 btn.disabled = false;
                 btn.innerHTML = 'SUBMIT &amp; DOWNLOAD PDF';
-                // Clear Admin session & automatically logout to Admin Login screen
-                sessionStorage.removeItem('skillversity_logged_admin');
                 window.location.reload();
             }, 1200);
         });
@@ -1715,16 +1455,19 @@
         };
 
         // Table UI Toggles & Search
-        document.getElementById('btnToggleTable').addEventListener('click', () => {
-            const sec = document.getElementById('adminTableSection');
-            if (sec.style.display === 'none' || !sec.style.display) {
-                sec.style.display = 'block';
-                renderAdminTable();
-                sec.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                sec.style.display = 'none';
-            }
-        });
+        const btnToggleTable = document.getElementById('btnToggleTable');
+        if (btnToggleTable) {
+            btnToggleTable.addEventListener('click', () => {
+                const sec = document.getElementById('adminTableSection');
+                if (sec.style.display === 'none' || !sec.style.display) {
+                    sec.style.display = 'block';
+                    renderAdminTable();
+                    sec.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        }
 
         document.getElementById('btnCloseTable').addEventListener('click', () => {
             document.getElementById('adminTableSection').style.display = 'none';
